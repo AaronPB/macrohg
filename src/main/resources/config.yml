@@ -1,0 +1,30 @@
+# Show debug messages
+debugmode: true
+
+# LuckPerms group ranks
+mentorgroup: mentor
+tributegroup: tributo
+deadtributegroup: tributomuerto
+
+# Participants
+# Cityname:
+#   mentor: username   (optional)
+#   tribute1: username
+#   tribute2: username (optional)
+
+districts:
+  Mancoland:
+    mentor: kalhon89
+    tribute1: aaron_el_genio
+    tribute2: manco2
+
+# Arena main settings
+# - WORLD
+world_name: world
+# World center coordinates
+world_center_x: 0
+world_center_z: 0
+# - Economy
+money_tributekill: 20 # When a tribute kills other tribute
+money_timesurvived: 5 # Each 10 minutes, per survived tribute
+money_allteamkilled: 5 # Per survived tribute

@@ -1,0 +1,24 @@
+author: AaronPB
+main: com.aaronpb.macrohg.Macrohg
+name: macrohg
+description: Plugin de los MacroJuegos del servidor MinExilon
+website: www.minexilon.com
+version: 0.0.1-SNAPSHOT
+api-version: 1.15
+
+depend: [LuckPerms, Vault]
+
+commands:
+  macrohg:
+    usage: /<command>
+    description: Command to manage all the system
+    permission: macrohg.admin
+    permission-message: No tienes permisos para ejecutar este comando aqui!
+
+permissions:
+  macrohg.player:
+    description: Needed to use administrator commands.
+    default: op
+  macrohg.admin:
+    description: Needed to use administrator commands.
+    default: op
