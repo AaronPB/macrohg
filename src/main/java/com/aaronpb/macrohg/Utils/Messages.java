@@ -133,5 +133,13 @@ public class Messages {
   // Private tribute messages
 
   // Private spectator messages
+  public void sendSpectatorHelpMsgs(Player spectator) {
+    spectator.sendMessage(MacrohgTag + Utils.chat("&9[&bINFO&9]&3 Hola "
+        + spectator.getName()
+        + "&3! Eres un espectador de los macrojuegos.\n&7Info de como usar el modo espectador:"));
+    spectator.sendMessage(Utils.chat("&7- &bEspectar a un tributo: &fPulsa 1 y selecciona del 1 al 9 el tributo que deseas espectar"));
+    spectator.sendMessage(Utils.chat("&7- &bSalir de la vista: &fUsa el shift"));
+    spectator.sendMessage(Utils.chat("&7- &bSalir de los MacroHG: &fUsa el comando /lobby"));
+  }
 
 }
