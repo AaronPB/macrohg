@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 
 import com.aaronpb.macrohg.Core;
+import com.aaronpb.macrohg.Utils.TimeFormats;
 import com.aaronpb.macrohg.Utils.Utils;
 
 public class AdminCommands implements Listener, CommandExecutor {
@@ -35,6 +36,17 @@ public class AdminCommands implements Listener, CommandExecutor {
       }
 
       switch (args[0]) {
+        case "status":
+          sender.sendMessage(Utils.chat("&6&lMacroHG - Status"));
+          if (Core.arenarunning) {
+            sender.sendMessage(Utils.chat("&7- &6Juego: &aEsta activado"));
+          } else {
+            sender.sendMessage(Utils.chat("&7- &6Juego: &cEsta desactivado"));
+          }
+          sender.sendMessage(Utils.chat("&7- &6Tiempo actual: &f"
+              + TimeFormats.getHourTimeFormatted(core.getMainTime())));
+          // TODO Loaded tribute list, live tributes, etc
+          break;
         case "start":
           if (Core.arenarunning) {
             sender.sendMessage(Utils.chat(
