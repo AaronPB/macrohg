@@ -1,14 +1,18 @@
 package com.aaronpb.macrohg.Events;
 
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.District;
 import com.aaronpb.macrohg.Utils.Messages;
+import com.aaronpb.macrohg.Utils.Utils;
 
 public class EventPlayerKill implements Listener {
 
@@ -16,38 +20,108 @@ public class EventPlayerKill implements Listener {
   private Messages msgs = new Messages();
 
   @EventHandler
-  public void PlayerKilled(PlayerDeathEvent event) {
+  public void PlayerGetDamage(EntityDamageEvent event) {
     World arena = (World) event.getEntity().getWorld();
+
+    if (!Core.arenarunning) {
+      return;
+    }
 
     if (!arena.equals(Core.arena)) {
       return;
     }
+    if (!(event.getEntity() instanceof Player)) {
+      return;
+    }
 
     Player deadtribute = (Player) event.getEntity();
-    Player killer      = (Player) event.getEntity().getKiller();
-
     if (deadtribute == null) {
       return;
     }
-
-    District losedistrict = core.getTributeDistrict(deadtribute);
-    
-    // FIXME Throws error null pointer
-    if (!losedistrict.getAliveTributes().contains(deadtribute.getName())) {
+    if (!core.getIsAliveTribute(deadtribute.getName())) {
+      Utils.sendToServerConsole("info", deadtribute.getName()
+          + " is not an alive tribute. Making it a spectator anyway ...");
+      deadtribute.setGameMode(GameMode.SPECTATOR);
       return;
     }
 
-    District windistrict = null;
+    if (deadtribute.getHealth() - event.getDamage() < 1) {
+      event.setCancelled(true);
+      for (ItemStack itemStack : deadtribute.getInventory().getContents()) {
+        if (itemStack != null) {
+          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+        }
+      }
+      for (ItemStack itemStack : deadtribute.getInventory()
+          .getArmorContents()) {
+        if (itemStack != null) {
+          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+        }
+      }
+      deadtribute.setGameMode(GameMode.SPECTATOR);
+      District losedistrict = core.getTributeDistrict(deadtribute.getName());
+      msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+          losedistrict.getDisctrictName());
+      core.killTribute(deadtribute, losedistrict, null);
+    }
+  }
 
-    if (killer == null) {
-      msgs.sendGlobalAllDistrictKilled(arena, losedistrict.getDisctrictName());
-    } else {
-      msgs.sendGlobalAllDistrictKilled(arena, losedistrict.getDisctrictName(),
-          killer.getName());
-      windistrict = core.getTributeDistrict(killer);
+  @EventHandler
+  public void PlayerGetDamageByEntity(EntityDamageByEntityEvent event) {
+    World arena = (World) event.getEntity().getWorld();
+
+    if (!Core.arenarunning) {
+      return;
     }
 
-    core.killTribute(deadtribute, losedistrict, windistrict);
+    if (!arena.equals(Core.arena)) {
+      return;
+    }
+    if (!(event.getEntity() instanceof Player)) {
+      return;
+    }
+
+    Player deadtribute = (Player) event.getEntity();
+    if (deadtribute == null) {
+      return;
+    }
+    if (!core.getIsAliveTribute(deadtribute.getName())) {
+      Utils.sendToServerConsole("info", deadtribute.getName()
+          + " is not an alive tribute. Making it a spectator anyway ...");
+      deadtribute.setGameMode(GameMode.SPECTATOR);
+      return;
+    }
+
+    if (deadtribute.getHealth() - event.getDamage() < 1) {
+      event.setCancelled(true);
+      for (ItemStack itemStack : deadtribute.getInventory().getContents()) {
+        if (itemStack != null) {
+          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+        }
+      }
+      for (ItemStack itemStack : deadtribute.getInventory()
+          .getArmorContents()) {
+        if (itemStack != null) {
+          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+        }
+      }
+      deadtribute.setGameMode(GameMode.SPECTATOR);
+
+      District losedistrict = core.getTributeDistrict(deadtribute.getName());
+      District windistrict  = null;
+      Player   killer       = (Player) event.getDamager();
+      if (killer == null) {
+        msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+            losedistrict.getDisctrictName());
+      } else {
+        windistrict = core.getTributeDistrict(killer.getName());
+        msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+            losedistrict.getDisctrictName(), killer.getName(),
+            windistrict.getDisctrictName());
+      }
+
+      core.killTribute(deadtribute, losedistrict, windistrict);
+    }
   }
 
 //  private void killEffects(Player dead, District district, World arena) {

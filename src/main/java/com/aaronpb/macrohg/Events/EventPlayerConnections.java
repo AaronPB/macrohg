@@ -1,5 +1,7 @@
 package com.aaronpb.macrohg.Events;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,10 +10,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.aaronpb.macrohg.Core;
+import com.aaronpb.macrohg.Macrohg;
+import com.aaronpb.macrohg.Utils.Messages;
 import com.aaronpb.macrohg.Utils.Utils;
 
 public class EventPlayerConnections implements Listener {
   private Core core = new Core();
+  private Messages msgs = new Messages();
 
   @EventHandler
   public void PlayerJoinServer(PlayerJoinEvent event) {
@@ -27,12 +32,23 @@ public class EventPlayerConnections implements Listener {
       Utils.sendToServerConsole("debug",
           "Adding " + player.getName() + " to the macrohg scoreboard.");
       core.addToScoreboard(player);
-      if (Core.arenarunning && core.getIsAliveTribute(player)) {
+      if (!core.getIsAliveTribute(player.getName())) {
+        Utils.sendToServerConsole("debug",
+            "Setting spectator mode to " + player.getName());
+        Bukkit.getScheduler().runTaskLater(Macrohg.plugin, new Runnable() {
+          @Override
+          public void run() {
+            player.setGameMode(GameMode.SPECTATOR);
+            msgs.sendSpectatorHelpMsgs(player);
+          }
+        }, 3L);
+      }
+      if (Core.arenarunning && core.getIsAliveTribute(player.getName())) {
         Utils.sendToServerConsole("debug", player.getName()
             + " is a disconnected tribute! Removing from alertsystem...");
-        core.removeFromAlertSystem(player);
+        core.removeFromAlertSystem(player.getName());
       }
-    } else if (core.getIsAliveTribute(player)) {
+    } else if (core.getIsAliveTribute(player.getName())) {
       // TODO Send message to join arena world!!
     }
   }
@@ -45,8 +61,8 @@ public class EventPlayerConnections implements Listener {
       return;
     }
 
-    if (Core.arenarunning && core.getIsAliveTribute(player)) {
-      core.addToAlertSystem(player);
+    if (Core.arenarunning && core.getIsAliveTribute(player.getName())) {
+      core.addToAlertSystem(player.getName());
     }
   }
 }
