@@ -15,6 +15,8 @@ public class Messages {
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(),
           Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 0.6f);
+      player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.7f,
+          0.8f);
       player.sendMessage(MacrohgTag + Utils.chat("&c[&4MUERTE&c] &c&l" + dead
           + "&3 de la ciudad&b " + districtdead + "&3 ha fallecido!"));
     });
@@ -25,6 +27,8 @@ public class Messages {
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(),
           Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 0.6f);
+      player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.7f,
+          0.8f);
       player.sendMessage(MacrohgTag + Utils.chat("&c[&4MUERTE&c] &c&l" + dead
           + "&3 de la ciudad&b " + districtdead + "&3 ha muerto a manos de&6&l "
           + killer + "&3 de la ciudad&b " + districtkiller));
@@ -35,7 +39,7 @@ public class Messages {
     arena.getPlayers()
         .forEach(player -> player.sendMessage(
             MacrohgTag + Utils.chat("&c[&d&mDISTRITO&c] &3La ciudad&c "
-                + district + "&3ha sido eliminada!")));
+                + district + "&3 ha sido eliminada!")));
   }
 
   public void sendGlobalAllDistrictKilled(World arena, String district,
@@ -43,7 +47,7 @@ public class Messages {
     arena.getPlayers()
         .forEach(player -> player.sendMessage(MacrohgTag
             + Utils.chat("&c[&d&mDISTRITO&c] &3La ciudad&c " + district
-                + "&3ha sido eliminada por la ciudad&b " + districtkiller)));
+                + "&3 ha sido eliminada por la ciudad&b " + districtkiller)));
   }
 
   // Global worldborder messages
@@ -51,27 +55,27 @@ public class Messages {
   public void sendGlobalBorderNotif5(World arena, int dimensions) {
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.AMBIENT_CAVE, 1, 1);
-      player.sendMessage(MacrohgTag
-          + Utils.chat("&c[&c&lBORDE&c] &3El borde se va a reducir a&b "
-              + dimensions + "x" + dimensions + " bloques &3dentro de &b5 minutos&3!"));
+      player.sendMessage(MacrohgTag + Utils
+          .chat("&c[&cBORDE&c] &3El borde se va a reducir a&b " + dimensions
+              + "x" + dimensions + " bloques &3dentro de &b5 minutos&3!"));
     });
   }
 
   public void sendGlobalBorderNotif2(World arena, int dimensions) {
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.AMBIENT_CAVE, 1, 1);
-      player.sendMessage(MacrohgTag
-          + Utils.chat("&c[&cBORDE&c] &3El borde se va a reducir a&b "
-              + dimensions + "x" + dimensions + " bloques &3dentro de &b2 minutos&3!"));
+      player.sendMessage(MacrohgTag + Utils
+          .chat("&c[&cBORDE&c] &3El borde se va a reducir a&b " + dimensions
+              + "x" + dimensions + " bloques &3dentro de &b2 minutos&3!"));
     });
   }
 
   public void sendGlobalBorderNotif1(World arena, int dimensions) {
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.AMBIENT_CAVE, 1, 1);
-      player.sendMessage(MacrohgTag
-          + Utils.chat("&c[&cBORDE&c] &3El borde se va a reducir a&b "
-              + dimensions + "x" + dimensions + " bloques &3dentro de &c1 minuto&3!"));
+      player.sendMessage(MacrohgTag + Utils
+          .chat("&c[&cBORDE&c] &3El borde se va a reducir a&b " + dimensions
+              + "x" + dimensions + " bloques &3dentro de &c1 minuto&3!"));
     });
   }
 
