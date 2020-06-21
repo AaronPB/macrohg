@@ -62,7 +62,12 @@ public class EventPlayerConnections implements Listener {
     }
 
     if (Core.arenarunning && core.getIsAliveTribute(player.getName())) {
-      core.addToAlertSystem(player.getName());
+      if (core.getAllAliveTributes() > 5) {
+        core.addToAlertSystem(player.getName());
+      } else {
+        core.killTribute(player, core.getTributeDistrict(player.getName()),
+            null);
+      }
     }
   }
 }

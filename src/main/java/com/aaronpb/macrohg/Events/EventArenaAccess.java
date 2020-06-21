@@ -29,10 +29,16 @@ public class EventArenaAccess implements Listener {
 
     if (previousworld.equals(Core.arena)) {
       if (Core.arenarunning && core.getIsAliveTribute(player.getName())) {
-        core.addToAlertSystem(player.getName());
+        if (core.getAllAliveTributes() > 5) {
+          core.addToAlertSystem(player.getName());
+        } else {
+          core.killTribute(player, core.getTributeDistrict(player.getName()),
+              null);
+        }
+
       }
       core.removeFromScoreboard(player);
-      if(Core.borderrunning) {
+      if (Core.borderrunning) {
         core.removeFromBossbar(player);
       }
       return;
@@ -52,7 +58,7 @@ public class EventArenaAccess implements Listener {
       if (Core.arenarunning && core.getIsAliveTribute(player.getName())) {
         core.removeFromAlertSystem(player.getName());
       }
-      if(Core.borderrunning) {
+      if (Core.borderrunning) {
         core.addToBossbar(player);
       }
       core.addToScoreboard(player);
