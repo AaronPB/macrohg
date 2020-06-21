@@ -84,9 +84,6 @@ public class Core {
               new Location(arena, world_cx, 50, world_cz));
         }
         arena.getPlayers().forEach(player -> {
-          if ((countdown % 3) == 0)
-            player.playSound(player.getLocation(),
-                Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.7f, 0.6f);
           player.playSound(player.getLocation(),
               Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 0.1f);
           player.sendTitle(Utils.chat("&3&l" + countdown),
@@ -298,7 +295,7 @@ public class Core {
               .setScore(1);
           break;
       }
-      newteam.setPrefix(Utils.chat("&a - "));
+      newteam.setPrefix(Utils.chat("&a v "));
 
       teamlist.add(new Pair<District, Team>(district, newteam));
     }

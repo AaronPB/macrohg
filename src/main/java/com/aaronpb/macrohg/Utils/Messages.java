@@ -13,8 +13,6 @@ public class Messages {
   public void sendGlobalTributeKillMsg(World arena, String dead,
       String districtdead) {
     arena.getPlayers().forEach(player -> {
-      player.playSound(player.getLocation(),
-          Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 0.6f);
       player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.7f,
           0.8f);
       player.sendMessage(MacrohgTag + Utils.chat("&c[&4MUERTE&c] &c&l" + dead
@@ -25,8 +23,6 @@ public class Messages {
   public void sendGlobalTributeKillMsg(World arena, String dead,
       String districtdead, String killer, String districtkiller) {
     arena.getPlayers().forEach(player -> {
-      player.playSound(player.getLocation(),
-          Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 0.6f);
       player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.7f,
           0.8f);
       player.sendMessage(MacrohgTag + Utils.chat("&c[&4MUERTE&c] &c&l" + dead
