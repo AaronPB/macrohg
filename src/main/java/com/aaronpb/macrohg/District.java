@@ -24,12 +24,14 @@ public class District {
     this.districtname = district;
     this.mentor = mentor;
     this.tribute1 = tribute1;
+    this.tribute2 = null;
     this.alive2 = false;
   }
 
   public District(String district, String tribute1) {
     this.districtname = district;
     this.tribute1 = tribute1;
+    this.tribute2 = null;
     this.alive2 = false;
   }
 
