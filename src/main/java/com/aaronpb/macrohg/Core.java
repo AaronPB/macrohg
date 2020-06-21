@@ -295,7 +295,7 @@ public class Core {
               .setScore(1);
           break;
       }
-      newteam.setPrefix(Utils.chat("&a v "));
+      newteam.setPrefix(Utils.chat("&a \u2726 "));
 
       teamlist.add(new Pair<District, Team>(district, newteam));
     }
@@ -320,7 +320,7 @@ public class Core {
           break;
         case 0:
           entrypair.getValue().setSuffix(Utils.chat(" &7&oEliminada"));
-          entrypair.getValue().setPrefix(Utils.chat("&c x "));
+          entrypair.getValue().setPrefix(Utils.chat("&c \u2620 "));
           objective
               .getScore(
                   Utils.chat("&d" + entrypair.getKey().getDisctrictName()))
@@ -546,5 +546,39 @@ public class Core {
 
   public int getMainTime() {
     return globaltimer;
+  }
+
+  public int getAllAliveTributes() {
+    int numtributes = 0;
+    for (District district : districtlist) {
+      numtributes += district.getAliveTributes().size();
+    }
+    return numtributes;
+  }
+
+  public String getAllListedTributes() {
+    String tributelist = "";
+    for (District district : districtlist) {
+      tributelist = tributelist
+          + Utils.chat("&d" + district.getDisctrictName() + "&5(");
+      String tribute1 = district.getTribute1();
+      String tribute2 = district.getTribute2();
+      Player player1  = Macrohg.plugin.getServer().getPlayer(tribute1);
+      if (player1 != null) {
+        tributelist = tributelist + Utils.chat("&a" + player1.getName());
+      } else {
+        tributelist = tributelist + Utils.chat("&c" + tribute1);
+      }
+      if (tribute2 != null) {
+        Player player2 = Macrohg.plugin.getServer().getPlayer(tribute2);
+        if (player2 != null) {
+          tributelist = tributelist + Utils.chat("&7|&a" + player2.getName());
+        } else {
+          tributelist = tributelist + Utils.chat("&7|&c" + tribute2);
+        }
+      }
+      tributelist = tributelist + Utils.chat("&5) ");
+    }
+    return tributelist;
   }
 }

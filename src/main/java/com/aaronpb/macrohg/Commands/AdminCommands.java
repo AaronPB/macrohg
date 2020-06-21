@@ -37,15 +37,18 @@ public class AdminCommands implements Listener, CommandExecutor {
 
       switch (args[0]) {
         case "status":
-          sender.sendMessage(Utils.chat("&6&lMacroHG - Status"));
+          sender.sendMessage(Utils.chat("&e&m====&6 &lMacroHG - Status&e &m===="));
           if (Core.arenarunning) {
             sender.sendMessage(Utils.chat("&7- &6Juego: &aEsta activado"));
           } else {
             sender.sendMessage(Utils.chat("&7- &6Juego: &cEsta desactivado"));
           }
-          sender.sendMessage(Utils.chat("&7- &6Tiempo actual: &f"
+          sender.sendMessage(Utils.chat("&7- &6Tiempo actual: &e"
               + TimeFormats.getHourTimeFormatted(core.getMainTime())));
-          // TODO Loaded tribute list, live tributes, etc
+          sender.sendMessage(Utils
+              .chat("&7- &6Tributos vivos: &e" + core.getAllAliveTributes()));
+          sender.sendMessage(Utils.chat(
+              "&7- &6Tributos registrados: &f" + core.getAllListedTributes()));
           break;
         case "start":
           if (Core.arenarunning) {
