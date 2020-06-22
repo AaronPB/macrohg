@@ -70,6 +70,18 @@ public class ConfigManager {
           "Could not read all the config params correctly."
               + " Correct mistakes in file and reload again!!");
     }
+
+    // Set predefined values
+    core.setArenaTimer(0);
+    // Setup Scoreboard
+    core.setupScoreboard();
+
+    // Update scoreboard to all users in world
+    Core.arena.getPlayers().forEach(player -> {
+      core.removeFromScoreboard(player);
+      core.addToScoreboard(player);
+    });
+
   }
 
   public void loadConfigParams() throws NullPointerException {

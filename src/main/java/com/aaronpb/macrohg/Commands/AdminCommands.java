@@ -1,19 +1,23 @@
 package com.aaronpb.macrohg.Commands;
 
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import com.aaronpb.macrohg.ConfigManager;
 import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.Macrohg;
+import com.aaronpb.macrohg.Utils.Messages;
 import com.aaronpb.macrohg.Utils.TimeFormats;
 import com.aaronpb.macrohg.Utils.Utils;
 
 public class AdminCommands implements Listener, CommandExecutor {
 
   private Core core = new Core();
+  private ConfigManager cfgmn = new ConfigManager();
 
   public String maincmd = "macrohg";
 
@@ -38,7 +42,7 @@ public class AdminCommands implements Listener, CommandExecutor {
           sender.sendMessage(
               Utils.chat("&e&m====&6 &lMacroHG - Asistencia&e &m===="));
           sender.sendMessage(Utils.chat(
-              "&e/macrohg reload &7Recargar la config (debe hacerse con la arena parada)"));
+              "&6/macrohg reload &7Recargar la config (debe hacerse con la arena parada)"));
           sender.sendMessage(
               Utils.chat("&6/macrohg status &7Revisar el estado del juego"));
           sender.sendMessage(Utils
@@ -57,8 +61,14 @@ public class AdminCommands implements Listener, CommandExecutor {
               "&e/macrohg deathmatch &7Activar la propagacion de muerte sobre los tributos"));
           break;
         case "reload":
+          if (Core.arenarunning) {
+            sender.sendMessage(Utils.chat(
+                "&cLa arena esta inicada! Para reiniciar primero paralo con &6/macrohg stop"));
+            break;
+          }
+          cfgmn.reload();
           sender.sendMessage(
-              Utils.chat("&3Todavia no se ha realizado esta opcion"));
+              Utils.chat("&aSe ha reiniciado la config correctamente."));
           break;
         case "status":
           sender.sendMessage(
@@ -103,7 +113,7 @@ public class AdminCommands implements Listener, CommandExecutor {
           }
           core.stopGame();
           sender.sendMessage(Utils.chat(
-              "&aSe ha parado el juego. Activalo de nuevo con &6/macrohg <start|directstart>"));
+              "&aSe ha parado el juego.\n&fActivalo de nuevo con &6/macrohg <start|directstart>"));
           break;
         case "settime":
           if (!Core.arenarunning) {
@@ -139,11 +149,19 @@ public class AdminCommands implements Listener, CommandExecutor {
                   "&cNo existe ningun tributo vivo con el nombre " + args[1]));
               break;
             }
-            Player tributo = Macrohg.plugin.getServer().getPlayer(args[1]);
+            Player   tributo = Macrohg.plugin.getServer().getPlayer(args[1]);
+            Messages msgs    = new Messages();
             if (tributo != null) {
+              msgs.sendGlobalTributeKillMsg(Core.arena, tributo.getName(), core
+                  .getTributeDistrict(tributo.getName()).getDisctrictName());
               core.killTribute(tributo,
                   core.getTributeDistrict(tributo.getName()), null);
+              if (tributo.getWorld().equals(Core.arena)) {
+                tributo.setGameMode(GameMode.SPECTATOR);
+              }
             } else {
+              msgs.sendGlobalTributeKillMsg(Core.arena, args[1],
+                  core.getTributeDistrict(args[1]).getDisctrictName());
               core.killTribute(args[1], core.getTributeDistrict(args[1]), null);
             }
           } else {
