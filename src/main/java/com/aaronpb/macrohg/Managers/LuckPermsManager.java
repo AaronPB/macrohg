@@ -2,6 +2,7 @@ package com.aaronpb.macrohg.Managers;
 
 import org.bukkit.entity.Player;
 
+import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.Macrohg;
 import com.aaronpb.macrohg.Utils.Utils;
 
@@ -40,12 +41,16 @@ public class LuckPermsManager {
     }
 
     // Make group change
-    InheritanceNode newnode = InheritanceNode.builder(deadtribgroup).build();
+    InheritanceNode newnode = InheritanceNode.builder(deadtribgroup)
+        .withContext("server", Macrohg.plugin.getServer().getName())
+        .withContext("world", Core.arena.getName()).build();
     user.data().add(newnode);
     Utils.sendToServerConsole("info", "LPmanager - " + player.getName()
         + " has been added to " + deadtributegroup);
 
-    InheritanceNode oldnode = InheritanceNode.builder(tribgroup).build();
+    InheritanceNode oldnode = InheritanceNode.builder(tribgroup)
+        .withContext("server", Macrohg.plugin.getServer().getName())
+        .withContext("world", Core.arena.getName()).build();
     user.data().remove(oldnode);
     Utils.sendToServerConsole("info", "LPmanager - " + player.getName()
         + " has been removed from " + tributegroup);
