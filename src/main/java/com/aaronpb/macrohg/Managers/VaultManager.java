@@ -3,7 +3,6 @@ package com.aaronpb.macrohg.Managers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.aaronpb.macrohg.District;
@@ -19,7 +18,8 @@ public class VaultManager {
 
   public void giveMoneyKill(District district) {
     if (district.getHasMentor() && district.getAliveTributes().size() > 0) {
-      Player player = Bukkit.getPlayer(district.getMentor());
+      Player player = Macrohg.plugin.getServer()
+          .getPlayer(district.getMentor());
       if (player != null) {
         econAPI.depositPlayer(player, econ_tributekill);
         Utils.sendToServerConsole("info", "[PLAYERKILLED] Sended "
@@ -34,7 +34,8 @@ public class VaultManager {
 
   public void giveMoneyDistrictKilled(District district) {
     if (district.getHasMentor() && district.getAliveTributes().size() > 0) {
-      Player player = Bukkit.getPlayer(district.getMentor());
+      Player player = Macrohg.plugin.getServer()
+          .getPlayer(district.getMentor());
       if (player != null) {
         econAPI.depositPlayer(player,
             district.getAliveTributes().size() * econ_districtkilled);
@@ -57,7 +58,8 @@ public class VaultManager {
       List<String> alivetributes = district.getAliveTributes();
 
       if (district.getHasMentor() && alivetributes.size() > 0) {
-        Player player = Bukkit.getPlayer(district.getMentor());
+        Player player = Macrohg.plugin.getServer()
+            .getPlayer(district.getMentor());
         if (player != null) {
           econAPI.depositPlayer(player,
               alivetributes.size() * econ_timesurvived);
