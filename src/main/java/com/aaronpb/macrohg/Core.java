@@ -72,6 +72,7 @@ public class Core {
   /* MacrohgCore - MAIN CORE */
 
   private void macrohgCountDown() {
+    countdown = 60;
     arenarunning = true;
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.4f,
@@ -166,8 +167,15 @@ public class Core {
         for (String tribute : cooldownlist.keySet()) {
           int cdtime = cooldownlist.get(tribute).intValue();
           if (cdtime == 0) {
-            killTribute(tribute, getTributeDistrict(tribute), null);
-            cooldownlist.remove(tribute);
+            Bukkit.getScheduler().runTask(Macrohg.plugin, new Runnable() {
+              @Override
+              public void run() {
+                cooldownlist.remove(tribute);
+                msgs.sendGlobalTributeKillMsg(arena, tribute,
+                    getTributeDistrict(tribute).getDisctrictName());
+                killTribute(tribute, getTributeDistrict(tribute), null);
+              }
+            });
           } else {
             cdtime--;
             cooldownlist.replace(tribute, cdtime);
@@ -349,7 +357,6 @@ public class Core {
     if (!cooldownlist.isEmpty()) {
       Utils.sendToServerConsole("info",
           "Removing " + playername + " from the cooldownlist.");
-      // FIXME It does not remove!
       if (cooldownlist.remove(playername) != null) {
         Utils.sendToServerConsole("info",
             "Successfully removed " + playername + " from the cooldownlist.");
@@ -372,6 +379,10 @@ public class Core {
     VaultManager     vmng  = new VaultManager();
 
     lpmng.changeToDeadTribute(deadtribute);
+
+    if (cooldownlist.containsKey(deadtribute.getName())) {
+      cooldownlist.remove(deadtribute.getName());
+    }
 
     // Arena effects
     arena.strikeLightningEffect(deadtribute.getLocation());
@@ -408,12 +419,24 @@ public class Core {
 
   public void killTribute(String deadtribute, District losedistrict,
       District windistrict) {
-    Messages msgs = new Messages();
-//    LuckPermsManager lpmng = new LuckPermsManager();
-    VaultManager vmng = new VaultManager();
+    Messages         msgs  = new Messages();
+    LuckPermsManager lpmng = new LuckPermsManager();
+    VaultManager     vmng  = new VaultManager();
 
-    // TODO
-//    lpmng.changeToDeadTribute(deadtribute);
+    Player player = Macrohg.plugin.getServer().getPlayer(deadtribute);
+    if (player != null) {
+      lpmng.changeToDeadTribute(player);
+    } else {
+      Utils.sendToServerConsole("warn",
+          "Could not change players groups from " + deadtribute
+              + " because it is an invalid name or player is offline!");
+    }
+
+    if (cooldownlist.containsKey(deadtribute)) {
+      Utils.sendToServerConsole("debug", "Removed " + deadtribute
+          + " from cooldownlist becuase it contains it.");
+      cooldownlist.remove(deadtribute);
+    }
 
     if (windistrict != null) {
       vmng.giveMoneyKill(windistrict);
