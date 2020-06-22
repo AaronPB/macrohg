@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -14,6 +15,8 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -43,8 +46,7 @@ public class Core {
   private static Team maintime, nextborder;
   private static int globaltimer = 0, nextbordertimer;
   private static final List<Pair<Integer, Integer>> bordertimerslist = Arrays
-      .asList(new Pair<Integer, Integer>(70, 800),
-          new Pair<Integer, Integer>(600, 700),
+      .asList(new Pair<Integer, Integer>(600, 700),
           new Pair<Integer, Integer>(1200, 650),
           new Pair<Integer, Integer>(1800, 500),
           new Pair<Integer, Integer>(2400, 300),
@@ -56,11 +58,10 @@ public class Core {
   private static int countdown = 60;
   // - border process
   private static BukkitTask borderbossbartasktimer, borderbossbartaskwaiter;
-  private static BukkitTask makenighttimer;// , makedaytimer, makedaywaiter;
+  private static BukkitTask makenighttimer;
   private static BossBar hgbar;
   private static WorldBorder hgborder;
-  private static int borderbossbartimer = 60; // 5 and 2 min notification, 1 min
-                                              // bossbartimer.
+  private static int borderbossbartimer = 60; // 1 min bossbartimer.
   // Districs info
   private static ArrayList<District> districtlist = new ArrayList<District>();
   // Tributes disconnected
@@ -103,6 +104,14 @@ public class Core {
 
   private void macrohgMain() {
     arenarunning = true;
+    Macrohg.plugin.getServer().getOnlinePlayers().forEach(player -> {
+      if (player.getGameMode().equals(GameMode.SURVIVAL)) {
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.addPotionEffect(
+            new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 1));
+      }
+    });
     arena.getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.2f,
           0.5f);
@@ -116,8 +125,8 @@ public class Core {
 
     checkAllTributes();
 
-//    VaultManager vmng = new VaultManager();
-    Messages msgs = new Messages();
+    VaultManager vmng = new VaultManager();
+    Messages     msgs = new Messages();
 
     maintasktimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
 
@@ -143,7 +152,7 @@ public class Core {
               borderrunning = true;
               nextborder.setSuffix(Utils.chat("&cACTIVO"));
               nextborder.setPrefix(Utils.chat("&5&l ! "));
-//              vmng.giveMoneyTimeSurvived(districtlist);
+              vmng.giveMoneyTimeSurvived(districtlist);
               hgborder.setSize(bordernextpair.getValue(), 60);
               bossbarBorderProcess();
               break;
@@ -171,7 +180,7 @@ public class Core {
               @Override
               public void run() {
                 cooldownlist.remove(tribute);
-                msgs.sendGlobalTributeKillMsg(arena, tribute,
+                msgs.sendGlobalSuddenDeathMsg(arena, tribute,
                     getTributeDistrict(tribute).getDisctrictName());
                 killTribute(tribute, getTributeDistrict(tribute), null);
               }
@@ -190,7 +199,6 @@ public class Core {
     }, 0, 20);
 
     maintaskwaiter = Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
-      // TODO Dejar todo a 0
       globaltimer = 0;
       maintasktimer.cancel();
       Utils.sendToServerConsole("info", "Arena timer correctly canceled!");
@@ -263,6 +271,29 @@ public class Core {
         }, 60 * 20);
   }
 
+  /* MacrohgCore - Winner */
+  private void celebrateWinnerTribute(String winner) {
+    Messages msgs = new Messages();
+    if (getAllAliveTributes() == 1 && getIsAliveTribute(winner)) {
+      Player player = Macrohg.plugin.getServer().getPlayer(winner);
+      arena.setTime(6000);
+      msgs.sendGlobalVictory(arena, winner,
+          getTributeDistrict(winner).getDisctrictName());
+      stopGame();
+      if (player == null) {
+        return;
+      }
+      player.setHealth(20);
+      player.setFoodLevel(20);
+      player.sendTitle(Utils.chat("&a¡¡Has ganado!! "),
+          Utils.chat("&fHas ganado los &6MacroJuegos&f, &d&lGG"), 30, 100, 50);
+      player.addPotionEffect(
+          new PotionEffect(PotionEffectType.LEVITATION, 180, 1));
+      player.addPotionEffect(
+          new PotionEffect(PotionEffectType.SLOW_FALLING, 500, 1));
+    }
+  }
+
   /* MacrohgCore - SCOREBOARD */
   public void setupScoreboard() {
     ScoreboardManager m = Macrohg.plugin.getServer().getScoreboardManager();
@@ -314,6 +345,7 @@ public class Core {
       switch (entrypair.getKey().getAliveTributes().size()) {
         case 2:
           entrypair.getValue().setSuffix(Utils.chat(" &7(&a2 tributos&7)"));
+          entrypair.getValue().setPrefix(Utils.chat("&a \u2726 "));
           objective
               .getScore(
                   Utils.chat("&d" + entrypair.getKey().getDisctrictName()))
@@ -321,6 +353,7 @@ public class Core {
           break;
         case 1:
           entrypair.getValue().setSuffix(Utils.chat(" &7(&e1 tributo&7)"));
+          entrypair.getValue().setPrefix(Utils.chat("&a \u2726 "));
           objective
               .getScore(
                   Utils.chat("&d" + entrypair.getKey().getDisctrictName()))
@@ -406,12 +439,25 @@ public class Core {
         losedistrict.setTribute1Dead();
       else
         losedistrict.setTribute2Dead();
-      // TODO district has been eliminated (scoreboard)
     } else {
       if (losedistrict.getTribute1().equals(deadtribute.getName()))
         losedistrict.setTribute1Dead();
       else
         losedistrict.setTribute2Dead();
+    }
+
+    if (getAllAliveTributes() == 5) {
+      Utils.sendToServerConsole("info", "Activate warning!!");
+      msgs.sendGlobalSuddenDeathWarning(arena);
+      killCooldownTributes();
+    } else if (getAllAliveTributes() == 1) {
+      Utils.sendToServerConsole("info", "Searching the winner!!...");
+      for (District district : districtlist) {
+        if (district.getAliveTributes().size() == 1) {
+          celebrateWinnerTribute(district.getAliveTributes().get(0));
+          break;
+        }
+      }
     }
 
     updateScoreboard();
@@ -456,7 +502,6 @@ public class Core {
         losedistrict.setTribute1Dead();
       else
         losedistrict.setTribute2Dead();
-      // TODO district has been eliminated (scoreboard)
     } else {
       if (losedistrict.getTribute1().equals(deadtribute))
         losedistrict.setTribute1Dead();
@@ -464,7 +509,38 @@ public class Core {
         losedistrict.setTribute2Dead();
     }
 
+    if (getAllAliveTributes() == 5) {
+      Utils.sendToServerConsole("info", "Activate warning!!");
+      msgs.sendGlobalSuddenDeathWarning(arena);
+      killCooldownTributes();
+    } else if (getAllAliveTributes() == 1) {
+      Utils.sendToServerConsole("info", "Searching the winner!!...");
+      for (District district : districtlist) {
+        if (district.getAliveTributes().size() == 1) {
+          celebrateWinnerTribute(district.getAliveTributes().get(0));
+          break;
+        }
+      }
+    }
+
     updateScoreboard();
+  }
+
+  public void killCooldownTributes() {
+    if (!cooldownlist.isEmpty()) {
+      Messages msgs = new Messages();
+      for (String tribute : cooldownlist.keySet()) {
+        Bukkit.getScheduler().runTask(Macrohg.plugin, new Runnable() {
+          @Override
+          public void run() {
+            cooldownlist.remove(tribute);
+            msgs.sendGlobalSuddenDeathMsg(arena, tribute,
+                getTributeDistrict(tribute).getDisctrictName());
+            killTribute(tribute, getTributeDistrict(tribute), null);
+          }
+        });
+      }
+    }
   }
 
   // Administrator live setters
@@ -515,9 +591,9 @@ public class Core {
     int numtributes = 0;
     for (District district : districtlist) {
       for (String tribute : district.getAliveTributes()) {
-        if (Bukkit.getPlayer(tribute) == null) {
+        if (Macrohg.plugin.getServer().getPlayer(tribute) == null) {
           addToAlertSystem(tribute);
-        } else if (!Bukkit.getPlayer(tribute).isOnline()) {
+        } else if (!Macrohg.plugin.getServer().getPlayer(tribute).isOnline()) {
           addToAlertSystem(tribute);
         } else {
           numtributes++;
@@ -525,6 +601,24 @@ public class Core {
       }
     }
     return numtributes;
+  }
+
+  public void reviveTribute(Player tributename) {
+    District district = null;
+    district = getTributeDistrict(tributename.getName());
+    if (district != null) {
+      LuckPermsManager lpmng = new LuckPermsManager();
+      district.setTributeAlive(tributename.getName());
+      Utils.sendToServerConsole("info",
+          "Successfully revived " + tributename.getName() + " from district "
+              + district.getDisctrictName());
+      lpmng.changeToAliveTribute(tributename);
+      updateScoreboard();
+    } else {
+      Utils.sendToServerConsole("warn",
+          "Could not revive " + tributename.getName()
+              + " because it is not a registered tribute name in config!");
+    }
   }
 
   // Setters
@@ -550,10 +644,11 @@ public class Core {
   // Getters
   public District getTributeDistrict(String playername) {
     for (District district : districtlist) {
-      if (district.getAliveTributes().contains(playername)) {
+      if (district.getTributes().contains(playername)) {
         return district;
       }
     }
+    Utils.sendToServerConsole("debug", playername + " is not a tribute!");
     return null;
   }
 
@@ -603,5 +698,13 @@ public class Core {
       tributelist = tributelist + Utils.chat("&5) ");
     }
     return tributelist;
+  }
+
+  public String getAllCDListedTributes() {
+    String cdlist = Utils.chat("&c");
+    for (String tribute : cooldownlist.keySet()) {
+      cdlist = cdlist + tribute + " ";
+    }
+    return cdlist;
   }
 }
