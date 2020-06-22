@@ -56,9 +56,7 @@ public class AdminCommands implements Listener, CommandExecutor {
           sender.sendMessage(Utils.chat(
               "&6/macrohg kill <jugador> &7Matar a un tributo de la arena"));
           sender.sendMessage(Utils.chat(
-              "&e/macrohg revive <jugador> &7Revivir a un tributo en la arena"));
-          sender.sendMessage(Utils.chat(
-              "&e/macrohg deathmatch &7Activar la propagacion de muerte sobre los tributos"));
+              "&6/macrohg revive <jugador> &7Revivir a un tributo en la arena"));
           break;
         case "reload":
           if (Core.arenarunning) {
@@ -85,6 +83,8 @@ public class AdminCommands implements Listener, CommandExecutor {
           sender.sendMessage(
               Utils.chat("&7- &6Tributos registrados: &aOnline &cOffline\n&f"
                   + core.getAllListedTributes()));
+          sender.sendMessage(Utils.chat(
+              "&7- &6Tributos INACTIVOS:\n&f" + core.getAllCDListedTributes()));
           break;
         case "start":
           if (Core.arenarunning) {
@@ -152,7 +152,7 @@ public class AdminCommands implements Listener, CommandExecutor {
             Player   tributo = Macrohg.plugin.getServer().getPlayer(args[1]);
             Messages msgs    = new Messages();
             if (tributo != null) {
-              msgs.sendGlobalTributeKillMsg(Core.arena, tributo.getName(), core
+              msgs.sendGlobalSuddenDeathMsg(Core.arena, tributo.getName(), core
                   .getTributeDistrict(tributo.getName()).getDisctrictName());
               core.killTribute(tributo,
                   core.getTributeDistrict(tributo.getName()), null);
@@ -160,7 +160,7 @@ public class AdminCommands implements Listener, CommandExecutor {
                 tributo.setGameMode(GameMode.SPECTATOR);
               }
             } else {
-              msgs.sendGlobalTributeKillMsg(Core.arena, args[1],
+              msgs.sendGlobalSuddenDeathMsg(Core.arena, args[1],
                   core.getTributeDistrict(args[1]).getDisctrictName());
               core.killTribute(args[1], core.getTributeDistrict(args[1]), null);
             }
@@ -170,12 +170,34 @@ public class AdminCommands implements Listener, CommandExecutor {
           }
           break;
         case "revive":
-          sender.sendMessage(
-              Utils.chat("&3Todavia no se ha realizado esta opcion"));
-          break;
-        case "deathmatch":
-          sender.sendMessage(
-              Utils.chat("&3Todavia no se ha realizado esta opcion"));
+          if (!Core.arenarunning) {
+            sender.sendMessage(Utils.chat(
+                "&cLa arena no ha empezado! Usalo cuando la arena este iniciada."));
+            break;
+          }
+          if (args.length == 2) {
+            Player   tributo = Macrohg.plugin.getServer().getPlayer(args[1]);
+            Messages msgs    = new Messages();
+            if (tributo != null) {
+              if (tributo.getWorld().equals(Core.arena) && tributo.isOnline()) {
+                msgs.sendGlobalTributeRevived(Core.arena, tributo.getName(),
+                    core.getTributeDistrict(tributo.getName())
+                        .getDisctrictName());
+                core.reviveTribute(tributo);
+                tributo.setGameMode(GameMode.SURVIVAL);
+                tributo.setHealth(20);
+              } else {
+                sender.sendMessage(Utils.chat("&cEl tributo " + args[1]
+                    + " debe estar online y en el mundo de los macrojuegos para poder revivirlo!"));
+              }
+            } else {
+              sender.sendMessage(Utils.chat("&cEl tributo " + args[1]
+                  + " debe ser un nombre valido y estar online para poder revivirlo!"));
+            }
+          } else {
+            sender.sendMessage(Utils
+                .chat("&cIndica el nombre del tributo al que deseas revivir."));
+          }
           break;
         default:
           sender.sendMessage(Utils.chat("&cNo existe el argumento " + args[0]
