@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.aaronpb.macrohg.District;
 import com.aaronpb.macrohg.Macrohg;
+import com.aaronpb.macrohg.Utils.Messages;
 import com.aaronpb.macrohg.Utils.Utils;
 
 import net.milkbowl.vault.economy.Economy;
@@ -17,10 +18,12 @@ public class VaultManager {
   private static int econ_tributekill, econ_timesurvived, econ_districtkilled;
 
   public void giveMoneyKill(District district) {
+    Messages msgs = new Messages();
     if (district.getHasMentor() && district.getAliveTributes().size() > 0) {
       Player player = Macrohg.plugin.getServer()
           .getPlayer(district.getMentor());
       if (player != null) {
+        msgs.sendMentorMoneyNotif(player, econ_tributekill);
         econAPI.depositPlayer(player, econ_tributekill);
         Utils.sendToServerConsole("info", "[PLAYERKILLED] Sended "
             + econ_tributekill + " to mentor " + district.getMentor());
@@ -37,6 +40,9 @@ public class VaultManager {
       Player player = Macrohg.plugin.getServer()
           .getPlayer(district.getMentor());
       if (player != null) {
+        Messages msgs = new Messages();
+        msgs.sendMentorMoneyNotif(player,
+            district.getAliveTributes().size() * econ_districtkilled);
         econAPI.depositPlayer(player,
             district.getAliveTributes().size() * econ_districtkilled);
         Utils.sendToServerConsole("info",
@@ -61,6 +67,9 @@ public class VaultManager {
         Player player = Macrohg.plugin.getServer()
             .getPlayer(district.getMentor());
         if (player != null) {
+          Messages msgs = new Messages();
+          msgs.sendMentorMoneyNotif(player,
+              district.getAliveTributes().size() * econ_timesurvived);
           econAPI.depositPlayer(player,
               alivetributes.size() * econ_timesurvived);
           Utils.sendToServerConsole("info",
