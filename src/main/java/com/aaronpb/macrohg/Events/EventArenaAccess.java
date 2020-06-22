@@ -32,7 +32,7 @@ public class EventArenaAccess implements Listener {
         if (core.getAllAliveTributes() > 5) {
           core.addToAlertSystem(player.getName());
         } else {
-          msgs.sendGlobalTributeKillMsg(Core.arena, player.getName(),
+          msgs.sendGlobalSuddenDeathMsg(Core.arena, player.getName(),
               core.getTributeDistrict(player.getName()).getDisctrictName());
           core.killTribute(player, core.getTributeDistrict(player.getName()),
               null);
