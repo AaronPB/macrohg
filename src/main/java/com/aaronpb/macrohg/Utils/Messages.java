@@ -31,6 +31,26 @@ public class Messages {
     });
   }
 
+  public void sendGlobalSuddenDeathWarning(World arena) {
+    arena.getPlayers().forEach(player -> {
+      player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.7f,
+          0.8f);
+      player.sendMessage(MacrohgTag + Utils.chat(
+          "&c[&4MUERTE SUBITA&c] &3Al quedar 5 o menos tributos, cualquier tipo de abandono de la arena, supondra &cmuerte subita&3!"));
+    });
+  }
+
+  public void sendGlobalSuddenDeathMsg(World arena, String dead,
+      String districtdead) {
+    arena.getPlayers().forEach(player -> {
+      player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 0.3f,
+          0.8f);
+      player.sendMessage(MacrohgTag + Utils.chat("&c[&4MUERTE SUBITA&c] &c&l"
+          + dead + "&3 de la ciudad&b " + districtdead
+          + "&3 ha fallecido por &cmuerte subita&3! &7(Inactividad)"));
+    });
+  }
+
   public void sendGlobalAllDistrictKilled(World arena, String district) {
     arena.getPlayers()
         .forEach(player -> player.sendMessage(
@@ -44,6 +64,19 @@ public class Messages {
         .forEach(player -> player.sendMessage(MacrohgTag
             + Utils.chat("&c[&d&mDISTRITO&c] &3La ciudad&c " + district
                 + "&3 ha sido eliminada por la ciudad&b " + districtkiller)));
+  }
+
+  // Global revive messages
+
+  public void sendGlobalTributeRevived(World arena, String revived,
+      String districtrevived) {
+    arena.getPlayers().forEach(player -> {
+      player.playSound(player.getLocation(), Sound.ENTITY_WITHER_AMBIENT, 0.7f,
+          0.8f);
+      player
+          .sendMessage(MacrohgTag + Utils.chat("&2[&aREVIDIDO&2] &a&l" + revived
+              + "&3 de la ciudad&b " + districtrevived + "&3 ha revivido!"));
+    });
   }
 
   // Global worldborder messages
@@ -88,7 +121,7 @@ public class Messages {
       player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON,
           1, 0.8f);
       player.sendMessage(MacrohgTag
-          + Utils.chat("&c[&5DESCONEX&c] &3El tributo &7 " + afktribute
+          + Utils.chat("&c[&5DESCONEX&c] &3El tributo &7" + afktribute
               + " &3se ha desconectado! Tiene &b4 minutos &3para evitar el pulso de muerte subita."));
     });
   }
@@ -98,7 +131,7 @@ public class Messages {
       player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON,
           1, 0.8f);
       player.sendMessage(MacrohgTag
-          + Utils.chat("&c[&5DESCONEX&c] &3El tributo &7 " + afktribute
+          + Utils.chat("&c[&5DESCONEX&c] &3El tributo &7" + afktribute
               + " &3tiene &b2 minutos &3para evitar el pulso de muerte subita."));
     });
   }
@@ -108,8 +141,20 @@ public class Messages {
       player.playSound(player.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON,
           1, 0.8f);
       player.sendMessage(MacrohgTag
-          + Utils.chat("&c[&5DESCONEX&c] &3El tributo &7 " + afktribute
+          + Utils.chat("&c[&5DESCONEX&c] &3El tributo &7" + afktribute
               + " &3tiene &c1 minuto &3para evitar el pulso de muerte subita."));
+    });
+  }
+
+  // Global victory message
+  public void sendGlobalVictory(World arena, String winner,
+      String districtwinner) {
+    arena.getPlayers().forEach(player -> {
+      player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE,
+          1, 0.5f);
+      player.sendMessage(MacrohgTag + Utils.chat("&2[&a&lGANADOR&2] &a&l"
+          + winner + "&3 de la ciudad&b " + districtwinner
+          + "&3 ha ganado la &6Tercera Edición de los Macrojuegos del Hambre&3!!!"));
     });
   }
 
