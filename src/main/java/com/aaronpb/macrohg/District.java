@@ -46,7 +46,23 @@ public class District {
     this.alive2 = false;
   }
 
+  public void setTributeAlive(String tributename) {
+    if(tributename.equals(this.tribute1)) {
+      this.alive1 = true;
+    }else if(tributename.equals(this.tribute2)) {
+      this.alive2 = true;
+    }
+  }
+
   // Getters
+  public List<String> getTributes() {
+    List<String> list = new ArrayList<String>();
+    list.add(tribute1);
+    if (this.tribute2 != null)
+      list.add(tribute2);
+    return list;
+  }
+
   public List<String> getAliveTributes() {
     List<String> list = new ArrayList<String>();
     if (alive1)
