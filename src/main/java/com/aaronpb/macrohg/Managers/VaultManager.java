@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.District;
 import com.aaronpb.macrohg.Macrohg;
 import com.aaronpb.macrohg.Utils.Messages;
@@ -23,6 +24,8 @@ public class VaultManager {
       Player player = Macrohg.plugin.getServer()
           .getPlayer(district.getMentor());
       if (player != null) {
+        msgs.sendGlobalTributeKillMoneyNotif(Core.arena,
+            district.getDisctrictName(), econ_tributekill);
         msgs.sendMentorMoneyNotif(player, econ_tributekill);
         econAPI.depositPlayer(player, econ_tributekill);
         Utils.sendToServerConsole("info", "[PLAYERKILLED] Sended "
@@ -41,24 +44,24 @@ public class VaultManager {
           .getPlayer(district.getMentor());
       if (player != null) {
         Messages msgs = new Messages();
-        msgs.sendMentorMoneyNotif(player,
-            district.getAliveTributes().size() * econ_districtkilled);
-        econAPI.depositPlayer(player,
-            district.getAliveTributes().size() * econ_districtkilled);
-        Utils.sendToServerConsole("info",
-            "[DISTRICTKILLED] Sended "
-                + district.getAliveTributes().size() * econ_districtkilled
-                + " to mentor " + district.getMentor());
+        msgs.sendGlobalAllDistrictKilledMoneyNotif(Core.arena,
+            district.getDisctrictName(), econ_districtkilled);
+        msgs.sendMentorMoneyNotif(player, econ_districtkilled);
+        econAPI.depositPlayer(player, econ_districtkilled);
+        Utils.sendToServerConsole("info", "[DISTRICTKILLED] Sended "
+            + econ_districtkilled + " to mentor " + district.getMentor());
       } else {
         Utils.sendToServerConsole("warn",
-            "[DISTRICTKILLED] Could not send "
-                + district.getAliveTributes().size() * econ_districtkilled
+            "[DISTRICTKILLED] Could not send " + econ_districtkilled
                 + " to mentor " + district.getMentor() + "! (Offline??)");
       }
     }
   }
 
   public void giveMoneyTimeSurvived(ArrayList<District> districtlist) {
+    Messages msgs = new Messages();
+    msgs.sendGlobalSurvivedMoneyNotif(Core.arena, econ_timesurvived);
+
     for (District district : districtlist) {
 
       List<String> alivetributes = district.getAliveTributes();
@@ -67,7 +70,6 @@ public class VaultManager {
         Player player = Macrohg.plugin.getServer()
             .getPlayer(district.getMentor());
         if (player != null) {
-          Messages msgs = new Messages();
           msgs.sendMentorMoneyNotif(player,
               district.getAliveTributes().size() * econ_timesurvived);
           econAPI.depositPlayer(player,

@@ -27,4 +27,4 @@ world_center_z: 0
 # - Economy
 money_tributekill: 20 # When a tribute kills other tribute
 money_timesurvived: 5 # Each 10 minutes, per survived tribute
-money_allteamkilled: 5 # Per survived tribute
+money_allteamkilled: 5 # Bonus when a district eliminates other
