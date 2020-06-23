@@ -52,6 +52,7 @@ public class ConfigManager {
   }
 
   public void reload() {
+    core.stopGame();
     config = Macrohg.plugin.getConfig();
     configfile = new File(Macrohg.plugin.getDataFolder(), "config.yml");
     if (!configfile.exists()) {

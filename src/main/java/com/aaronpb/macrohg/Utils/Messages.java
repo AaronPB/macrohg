@@ -217,7 +217,9 @@ public class Messages {
     spectator.sendMessage(Utils.chat(
         "&7- &bEspectar a un tributo: &fPulsa 1 para abrir el panel de control, y pulsa 1 de nuevo para desplegar el menu de jugadores a espectar"));
     spectator.sendMessage(Utils.chat(
-        "&7- &bEntrar en la vista del tributo: &fHaz click sobre el jugador que este en survival"));
+        "&7- &bAumenta tu velocidad: &fUsa la rueda del raton para modificar tu velocidad de vuelo"));
+    spectator.sendMessage(Utils.chat(
+        "&7- &bEntrar en la vista del tributo: &fHaz click izquierdo sobre el jugador que este en survival"));
     spectator.sendMessage(
         Utils.chat("&7- &bSalir de la vista del tributo: &fUsa el shift"));
     spectator.sendMessage(

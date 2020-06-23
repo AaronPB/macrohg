@@ -3,7 +3,7 @@ main: com.aaronpb.macrohg.Macrohg
 name: macrohg
 description: Plugin de los MacroJuegos del servidor MinExilon
 website: www.minexilon.com
-version: 0.0.1-SNAPSHOT
+version: 0.1.0
 api-version: 1.15
 
 depend: [LuckPerms, Vault]

@@ -15,6 +15,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
@@ -58,7 +59,7 @@ public class Core {
   private static int countdown = 60;
   // - border process
   private static BukkitTask borderbossbartasktimer, borderbossbartaskwaiter;
-  private static BukkitTask makenighttimer;
+  private static BukkitTask makenighttimer, makenighttimerlasteffect;
   private static BossBar hgbar;
   private static WorldBorder hgborder;
   private static int borderbossbartimer = 60; // 1 min bossbartimer.
@@ -107,7 +108,7 @@ public class Core {
     Messages     msgs = new Messages();
 
     arenarunning = true;
-    Macrohg.plugin.getServer().getOnlinePlayers().forEach(player -> {
+    arena.getPlayers().forEach(player -> {
       if (player.getGameMode().equals(GameMode.SURVIVAL)) {
         player.setHealth(20);
         player.setFoodLevel(20);
@@ -131,7 +132,7 @@ public class Core {
     maintasktimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
 
       if (globaltimer > 2 && globaltimer < 6) {
-        Macrohg.plugin.getServer().getOnlinePlayers().forEach(player -> {
+        arena.getPlayers().forEach(player -> {
           if (player.getGameMode().equals(GameMode.SURVIVAL)) {
             msgs.sendTributeSlowFallingMsg(player);
           }
@@ -223,6 +224,19 @@ public class Core {
     }, 0, 1);
   }
 
+  private void makeNightFastFinalEffect() {
+    makenighttimerlasteffect = Bukkit.getScheduler()
+        .runTaskTimer(Macrohg.plugin, () -> {
+          arena.setTime(arena.getTime() + 20);
+        }, 0, 1);
+
+    Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
+      makenighttimerlasteffect.cancel();
+      Utils.sendToServerConsole("info",
+          "makenighttimerlasteffect timer correctly canceled!");
+    }, 1200);
+  }
+
   private void bossbarBorderProcess() {
     try {
       makenighttimer.cancel();
@@ -283,6 +297,7 @@ public class Core {
   private void celebrateWinnerTribute(String winner) {
     Messages msgs = new Messages();
     if (getAllAliveTributes() == 1 && getIsAliveTribute(winner)) {
+      makeNightFastFinalEffect();
       Player player = Macrohg.plugin.getServer().getPlayer(winner);
       arena.setTime(6000);
       msgs.sendGlobalVictory(arena, winner,
@@ -297,8 +312,23 @@ public class Core {
           Utils.chat("&fHas ganado los &6MacroJuegos&f, &d&lGG"), 30, 100, 50);
       player.addPotionEffect(
           new PotionEffect(PotionEffectType.LEVITATION, 180, 1));
-      player.addPotionEffect(
-          new PotionEffect(PotionEffectType.SLOW_FALLING, 500, 1));
+      Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
+        arena.strikeLightningEffect(player.getLocation());
+        arena.strikeLightningEffect(player.getLocation());
+        for (ItemStack itemStack : player.getInventory().getContents()) {
+          if (itemStack != null) {
+            arena.dropItemNaturally(player.getLocation(), itemStack);
+          }
+        }
+        for (ItemStack itemStack : player.getInventory().getArmorContents()) {
+          if (itemStack != null) {
+            arena.dropItemNaturally(player.getLocation(), itemStack);
+          }
+        }
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(new ItemStack[4]);
+        player.setGameMode(GameMode.SPECTATOR);
+      }, 160);
     }
   }
 
@@ -576,10 +606,15 @@ public class Core {
       borderbossbartasktimer.cancel();
       borderbossbartaskwaiter.cancel();
       hgbar.removeAll();
-      makenighttimer.cancel();
     } catch (Exception e) {
       Utils.sendToServerConsole("warn",
           "Could not cancel borderbossbar tasks or bossbar removal (maybe not initialized)");
+    }
+    try {
+      makenighttimer.cancel();
+    } catch (Exception e) {
+      Utils.sendToServerConsole("warn",
+          "Could not cancel makenighttimer task (maybe not initialized)");
     }
     arenarunning = false;
     borderrunning = false;

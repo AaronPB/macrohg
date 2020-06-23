@@ -29,9 +29,14 @@ public class EventPlayerConnections implements Listener {
     World world = player.getWorld();
 
     if (world.equals(Core.arena)) {
-      Utils.sendToServerConsole("debug",
-          "Adding " + player.getName() + " to the macrohg scoreboard.");
-      core.addToScoreboard(player);
+      Bukkit.getScheduler().runTaskLater(Macrohg.plugin, new Runnable() {
+        @Override
+        public void run() {
+          Utils.sendToServerConsole("debug",
+              "Adding " + player.getName() + " to the macrohg scoreboard.");
+          core.addToScoreboard(player);
+        }
+      }, 10L);
       if (!core.getIsAliveTribute(player.getName())) {
         Utils.sendToServerConsole("debug",
             "Setting spectator mode to " + player.getName());
@@ -41,7 +46,7 @@ public class EventPlayerConnections implements Listener {
             player.setGameMode(GameMode.SPECTATOR);
             msgs.sendSpectatorHelpMsgs(player);
           }
-        }, 3L);
+        }, 10L);
       }
       if (Core.arenarunning && core.getIsAliveTribute(player.getName())) {
         Utils.sendToServerConsole("debug", player.getName()

@@ -125,8 +125,7 @@ public class AdminCommands implements Listener, CommandExecutor {
   private void actionReload(CommandSender sender) {
     if (Core.arenarunning) {
       sender.sendMessage(Utils.chat(
-          "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &cLa arena esta inicada! Para reiniciar primero paralo con &6/macrohg stop"));
-      return;
+          "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &cLa arena esta inicada! Si no se para el juego usa &6/macrohg stop"));
     }
     cfgmn.reload();
     sender.sendMessage(Utils.chat(

@@ -41,7 +41,7 @@ public class LuckPermsManager {
     }
 
     MutableContextSet macrohgcontext = MutableContextSet.create();
-    macrohgcontext.add("server", Macrohg.plugin.getServer().getName());
+    macrohgcontext.add("server", "juegos");
     macrohgcontext.add("world", Core.arena.getName());
 
     // Make group change
@@ -95,7 +95,7 @@ public class LuckPermsManager {
     }
 
     MutableContextSet macrohgcontext = MutableContextSet.create();
-    macrohgcontext.add("server", Macrohg.plugin.getServer().getName());
+    macrohgcontext.add("server", "juegos");
     macrohgcontext.add("world", Core.arena.getName());
 
     // Make group change
