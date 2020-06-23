@@ -202,6 +202,12 @@ public class Messages {
   }
 
   // Private tribute messages
+  public void sendTributeSlowFallingMsg(Player player) {
+    player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+        1, 0.5f);
+    player.sendMessage(MacrohgTag + Utils.chat(
+        "&9[&bINFO&9]&3 Tienes activado &b30 SEGUNDOS &3de &bCAIDA LENTA &3para bajar del pilar sin hacerte daño!"));
+  }
 
   // Private spectator messages
   public void sendSpectatorHelpMsgs(Player spectator) {
