@@ -103,13 +103,16 @@ public class Core {
   }
 
   private void macrohgMain() {
+    VaultManager vmng = new VaultManager();
+    Messages     msgs = new Messages();
+
     arenarunning = true;
     Macrohg.plugin.getServer().getOnlinePlayers().forEach(player -> {
       if (player.getGameMode().equals(GameMode.SURVIVAL)) {
         player.setHealth(20);
         player.setFoodLevel(20);
         player.addPotionEffect(
-            new PotionEffect(PotionEffectType.SLOW_FALLING, 200, 1));
+            new PotionEffect(PotionEffectType.SLOW_FALLING, 600, 1));
       }
     });
     arena.getPlayers().forEach(player -> {
@@ -125,10 +128,15 @@ public class Core {
 
     checkAllTributes();
 
-    VaultManager vmng = new VaultManager();
-    Messages     msgs = new Messages();
-
     maintasktimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
+
+      if (globaltimer > 2 && globaltimer < 6) {
+        Macrohg.plugin.getServer().getOnlinePlayers().forEach(player -> {
+          if (player.getGameMode().equals(GameMode.SURVIVAL)) {
+            msgs.sendTributeSlowFallingMsg(player);
+          }
+        });
+      }
 
       int prenextbordertimer;
       for (Pair<Integer, Integer> bordernextpair : bordertimerslist) {
