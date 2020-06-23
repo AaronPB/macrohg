@@ -411,7 +411,7 @@ public class Core {
     LuckPermsManager lpmng = new LuckPermsManager();
     VaultManager     vmng  = new VaultManager();
 
-    lpmng.changeToDeadTribute(deadtribute);
+    lpmng.changeToDeadTribute(deadtribute.getName());
 
     if (cooldownlist.containsKey(deadtribute.getName())) {
       cooldownlist.remove(deadtribute.getName());
@@ -469,14 +469,7 @@ public class Core {
     LuckPermsManager lpmng = new LuckPermsManager();
     VaultManager     vmng  = new VaultManager();
 
-    Player player = Macrohg.plugin.getServer().getPlayer(deadtribute);
-    if (player != null) {
-      lpmng.changeToDeadTribute(player);
-    } else {
-      Utils.sendToServerConsole("warn",
-          "Could not change players groups from " + deadtribute
-              + " because it is an invalid name or player is offline!");
-    }
+    lpmng.changeToDeadTribute(deadtribute);
 
     if (cooldownlist.containsKey(deadtribute)) {
       Utils.sendToServerConsole("debug", "Removed " + deadtribute
@@ -612,7 +605,7 @@ public class Core {
       Utils.sendToServerConsole("info",
           "Successfully revived " + tributename.getName() + " from district "
               + district.getDisctrictName());
-      lpmng.changeToAliveTribute(tributename);
+      lpmng.changeToAliveTribute(tributename.getName());
       updateScoreboard();
     } else {
       Utils.sendToServerConsole("warn",
@@ -690,9 +683,9 @@ public class Core {
       if (tribute2 != null) {
         Player player2 = Macrohg.plugin.getServer().getPlayer(tribute2);
         if (player2 != null) {
-          tributelist = tributelist + Utils.chat("&7|&a" + player2.getName());
+          tributelist = tributelist + Utils.chat(" &a" + player2.getName());
         } else {
-          tributelist = tributelist + Utils.chat("&7|&c" + tribute2);
+          tributelist = tributelist + Utils.chat(" &c" + tribute2);
         }
       }
       tributelist = tributelist + Utils.chat("&5) ");
