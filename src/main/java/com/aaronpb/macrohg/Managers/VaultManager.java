@@ -3,6 +3,7 @@ package com.aaronpb.macrohg.Managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.aaronpb.macrohg.Core;
@@ -60,7 +61,9 @@ public class VaultManager {
 
   public void giveMoneyTimeSurvived(ArrayList<District> districtlist) {
     Messages msgs = new Messages();
-    msgs.sendGlobalSurvivedMoneyNotif(Core.arena, econ_timesurvived);
+    Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
+      msgs.sendGlobalSurvivedMoneyNotif(Core.arena, econ_timesurvived);
+    }, 40);
 
     for (District district : districtlist) {
 
