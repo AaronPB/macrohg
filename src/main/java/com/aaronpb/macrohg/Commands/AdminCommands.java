@@ -71,6 +71,9 @@ public class AdminCommands implements Listener, CommandExecutor {
         case "status":
           sender.sendMessage(
               Utils.chat("&e&m====&6 &lMacroHG - Status&e &m===="));
+          sender.sendMessage(Utils
+              .chat("&e- &6Server: &f" + Macrohg.plugin.getServer().getName()
+                  + " &7| &6Arena: &f" + Core.arena.getName()));
           if (Core.arenarunning) {
             sender.sendMessage(Utils.chat("&7- &6Juego: &aEsta activado"));
           } else {
