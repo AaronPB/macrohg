@@ -1,12 +1,11 @@
 package com.aaronpb.macrohg.Managers;
 
-import org.bukkit.entity.Player;
-
 import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.Macrohg;
 import com.aaronpb.macrohg.Utils.Utils;
 
 import net.luckperms.api.LuckPerms;
+import net.luckperms.api.context.MutableContextSet;
 import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
@@ -17,12 +16,12 @@ public class LuckPermsManager {
   private LuckPerms lpAPI = Macrohg.luckPerms;
   private static String tributegroup, deadtributegroup;
 
-  public void changeToDeadTribute(Player player) {
+  public void changeToDeadTribute(String deadplayer) {
     // Load user information
-    User user = lpAPI.getUserManager().getUser(player.getName());
+    User user = lpAPI.getUserManager().getUser(deadplayer);
     if (user == null) {
-      Utils.sendToServerConsole("warn", "LPmanager - " + player.getName()
-          + " does no exist in LuckPerms! Returning false");
+      Utils.sendToServerConsole("warn", "LPmanager - " + deadplayer
+          + " does no exist in LuckPerms! Groups not changed.");
       return;
     }
 
@@ -41,38 +40,42 @@ public class LuckPermsManager {
       return;
     }
 
+    MutableContextSet macrohgcontext = MutableContextSet.create();
+    macrohgcontext.add("server", Macrohg.plugin.getServer().getName());
+    macrohgcontext.add("world", Core.arena.getName());
+
     // Make group change
     InheritanceNode  newnode = InheritanceNode.builder(deadtribgroup)
-        .withContext("server", Macrohg.plugin.getServer().getName())
-        .withContext("world", Core.arena.getName()).build();
+        .context(macrohgcontext).build();
     DataMutateResult result  = user.data().add(newnode);
     if (result.wasSuccessful()) {
-      Utils.sendToServerConsole("info", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("info", "LPmanager - " + deadplayer
           + " has been added to " + deadtributegroup);
     } else {
-      Utils.sendToServerConsole("error", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("error", "LPmanager - " + deadplayer
           + " could not be added to " + deadtributegroup);
     }
 
     InheritanceNode oldnode = InheritanceNode.builder(tribgroup)
-        .withContext("server", Macrohg.plugin.getServer().getName())
-        .withContext("world", Core.arena.getName()).build();
+        .context(macrohgcontext).build();
     result = user.data().remove(oldnode);
     if (result.wasSuccessful()) {
-      Utils.sendToServerConsole("info", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("info", "LPmanager - " + deadplayer
           + " has been removed from " + tributegroup);
     } else {
-      Utils.sendToServerConsole("error", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("error", "LPmanager - " + deadplayer
           + " could not be removed from " + tributegroup);
     }
+
+    lpAPI.getUserManager().saveUser(user);
   }
-  
-  public void changeToAliveTribute(Player player) {
+
+  public void changeToAliveTribute(String revivingplayer) {
     // Load user information
-    User user = lpAPI.getUserManager().getUser(player.getName());
+    User user = lpAPI.getUserManager().getUser(revivingplayer);
     if (user == null) {
-      Utils.sendToServerConsole("warn", "LPmanager - " + player.getName()
-          + " does no exist in LuckPerms! Returning false");
+      Utils.sendToServerConsole("warn", "LPmanager - " + revivingplayer
+          + " does no exist in LuckPerms! Groups not changed.");
       return;
     }
 
@@ -91,30 +94,34 @@ public class LuckPermsManager {
       return;
     }
 
+    MutableContextSet macrohgcontext = MutableContextSet.create();
+    macrohgcontext.add("server", Macrohg.plugin.getServer().getName());
+    macrohgcontext.add("world", Core.arena.getName());
+
     // Make group change
     InheritanceNode  newnode = InheritanceNode.builder(tribgroup)
-        .withContext("server", Macrohg.plugin.getServer().getName())
-        .withContext("world", Core.arena.getName()).build();
+        .context(macrohgcontext).build();
     DataMutateResult result  = user.data().add(newnode);
     if (result.wasSuccessful()) {
-      Utils.sendToServerConsole("info", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("info", "LPmanager - " + revivingplayer
           + " has been added to " + tributegroup);
     } else {
-      Utils.sendToServerConsole("error", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("error", "LPmanager - " + revivingplayer
           + " could not be added to " + tributegroup);
     }
 
     InheritanceNode oldnode = InheritanceNode.builder(deadtribgroup)
-        .withContext("server", Macrohg.plugin.getServer().getName())
-        .withContext("world", Core.arena.getName()).build();
+        .context(macrohgcontext).build();
     result = user.data().remove(oldnode);
     if (result.wasSuccessful()) {
-      Utils.sendToServerConsole("info", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("info", "LPmanager - " + revivingplayer
           + " has been removed from " + deadtributegroup);
     } else {
-      Utils.sendToServerConsole("error", "LPmanager - " + player.getName()
+      Utils.sendToServerConsole("error", "LPmanager - " + revivingplayer
           + " could not be removed from " + deadtributegroup);
     }
+
+    lpAPI.getUserManager().saveUser(user);
   }
 
   // Setters
