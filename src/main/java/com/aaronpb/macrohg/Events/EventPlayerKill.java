@@ -1,5 +1,6 @@
 package com.aaronpb.macrohg.Events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -7,10 +8,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.District;
+import com.aaronpb.macrohg.Macrohg;
 import com.aaronpb.macrohg.Utils.Messages;
 import com.aaronpb.macrohg.Utils.Utils;
 
@@ -34,10 +37,19 @@ public class EventPlayerKill implements Listener {
       return;
     }
 
+    if (event.getCause().equals(DamageCause.ENTITY_ATTACK)
+        || event.getCause().equals(DamageCause.ENTITY_SWEEP_ATTACK)
+        || event.getCause().equals(DamageCause.PROJECTILE)) {
+      Utils.sendToServerConsole("debug",
+          "Ignoring proceed because it is an entity single, sweep or projectile attack.");
+      return;
+    }
+
     Player deadtribute = (Player) event.getEntity();
     if (deadtribute == null) {
       return;
     }
+    Utils.sendToServerConsole("debug", "PlayerGetDamage - Running!");
     if (!core.getIsAliveTribute(deadtribute.getName())) {
       Utils.sendToServerConsole("info", deadtribute.getName()
           + " is not an alive tribute. Making it a spectator anyway ...");
@@ -58,10 +70,16 @@ public class EventPlayerKill implements Listener {
           arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
         }
       }
+      deadtribute.getInventory().clear();
+      deadtribute.getInventory().setArmorContents(new ItemStack[4]);
       deadtribute.setGameMode(GameMode.SPECTATOR);
+
       District losedistrict = core.getTributeDistrict(deadtribute.getName());
       msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
           losedistrict.getDisctrictName());
+      Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
+        msgs.sendSpectatorHelpMsgs(deadtribute);
+      }, 40);
       core.killTribute(deadtribute, losedistrict, null);
     }
   }
@@ -85,6 +103,7 @@ public class EventPlayerKill implements Listener {
     if (deadtribute == null) {
       return;
     }
+    Utils.sendToServerConsole("debug", "PlayerGetDamageByEntity - Running!");
     if (!core.getIsAliveTribute(deadtribute.getName())) {
       Utils.sendToServerConsole("info", deadtribute.getName()
           + " is not an alive tribute. Making it a spectator anyway ...");
@@ -105,11 +124,24 @@ public class EventPlayerKill implements Listener {
           arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
         }
       }
+      deadtribute.getInventory().clear();
+      deadtribute.getInventory().setArmorContents(new ItemStack[4]);
       deadtribute.setGameMode(GameMode.SPECTATOR);
 
       District losedistrict = core.getTributeDistrict(deadtribute.getName());
       District windistrict  = null;
-      Player   killer       = (Player) event.getDamager();
+      if (!(event.getDamager() instanceof Player)) {
+        Utils.sendToServerConsole("debug",
+            "Killer is not a player! Preforming normal kill.");
+        msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+            losedistrict.getDisctrictName());
+        Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
+          msgs.sendSpectatorHelpMsgs(deadtribute);
+        }, 40);
+        core.killTribute(deadtribute, losedistrict, null);
+        return;
+      }
+      Player killer = (Player) event.getDamager();
       if (killer == null) {
         msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
             losedistrict.getDisctrictName());
@@ -120,37 +152,10 @@ public class EventPlayerKill implements Listener {
             windistrict.getDisctrictName());
       }
 
+      Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
+        msgs.sendSpectatorHelpMsgs(deadtribute);
+      }, 40);
       core.killTribute(deadtribute, losedistrict, windistrict);
     }
   }
-
-//  private void killEffects(Player dead, District district, World arena) {
-//    Bukkit.getOnlinePlayers().forEach(player -> {
-//      if (player.getWorld().equals(Core.arena)) {
-//        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_DEATH, 1,
-//            0.5f);
-//        player.sendTitle(Utils.chat("&c\1f480 " + dead.getName() + " \1f480"),
-//            Utils.chat(
-//                "&7Tributo fallecido de &3" + core.getTributeDistrict(dead)),
-//            5, 25, 20);
-//      }
-//    });
-//
-//    // Arena effects
-//    arena.strikeLightningEffect(dead.getLocation());
-//    arena.strikeLightningEffect(dead.getLocation());
-//
-//    long arenatime = arena.getTime();
-//    timer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
-//      if(arenatime < 9000 || arenatime > 23900) {
-//        arena.setTime(18000);
-//      }else {
-//        arena.setTime(6000);
-//      }
-//    }, 7, 30);
-//    waiter = Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
-//      timer.cancel();
-//      arena.setTime(arenatime);
-//    }, 30);
-//  }
 }
