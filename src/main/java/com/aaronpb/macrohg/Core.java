@@ -659,6 +659,7 @@ public class Core {
 
   // Setters
   public void setDistrictList(ArrayList<District> list) {
+    cooldownlist.clear();
     districtlist = list;
   }
 
