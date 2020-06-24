@@ -30,6 +30,7 @@ public class District {
 
   public District(String district, String tribute1) {
     this.districtname = district;
+    this.mentor = null;
     this.tribute1 = tribute1;
     this.tribute2 = null;
     this.alive2 = false;
@@ -47,9 +48,9 @@ public class District {
   }
 
   public void setTributeAlive(String tributename) {
-    if(tributename.equals(this.tribute1)) {
+    if (tributename.equals(this.tribute1)) {
       this.alive1 = true;
-    }else if(tributename.equals(this.tribute2)) {
+    } else if (tributename.equals(this.tribute2)) {
       this.alive2 = true;
     }
   }
@@ -74,7 +75,7 @@ public class District {
   }
 
   public boolean getHasMentor() {
-    if (!mentor.isEmpty())
+    if (mentor != null)
       return true;
     return false;
   }

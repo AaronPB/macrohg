@@ -68,7 +68,7 @@ public class VaultManager {
     for (District district : districtlist) {
 
       List<String> alivetributes = district.getAliveTributes();
-      // FIXME handler for null mentors??? throws nullerror
+
       if (district.getHasMentor() && alivetributes.size() > 0) {
         Player player = Macrohg.plugin.getServer()
             .getPlayer(district.getMentor());
