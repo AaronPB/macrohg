@@ -86,12 +86,22 @@ public class Core {
           arena.strikeLightningEffect(
               new Location(arena, world_cx, 50, world_cz));
         }
-        arena.getPlayers().forEach(player -> {
-          player.playSound(player.getLocation(),
-              Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 0.1f);
-          player.sendTitle(Utils.chat("&3&l" + countdown),
-              Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
-        });
+        if (countdown > 10) {
+          arena.getPlayers().forEach(player -> {
+            player.playSound(player.getLocation(),
+                Sound.BLOCK_STONE_BUTTON_CLICK_ON, 0.5f, 0.8f);
+            player.sendTitle(Utils.chat("&3&l" + countdown),
+                Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
+          });
+        } else {
+          arena.getPlayers().forEach(player -> {
+            player.playSound(player.getLocation(),
+                Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 0.1f);
+            player.sendTitle(Utils.chat("&c&l" + countdown),
+                Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
+          });
+        }
+
       }
       countdown--;
     }, 0, 20);
