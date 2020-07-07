@@ -25,7 +25,8 @@ public class VaultManager {
       Player player = Macrohg.plugin.getServer()
           .getPlayer(district.getMentor());
       if (player != null) {
-        msgs.sendGlobalTributeKillMoneyNotif(Core.arena,
+        msgs.sendGlobalTributeKillMoneyNotif(
+            Macrohg.plugin.getServer().getWorld(Core.arena),
             district.getDisctrictName(), econ_tributekill);
         msgs.sendMentorMoneyNotif(player, econ_tributekill);
         econAPI.depositPlayer(player, econ_tributekill);
@@ -45,7 +46,8 @@ public class VaultManager {
           .getPlayer(district.getMentor());
       if (player != null) {
         Messages msgs = new Messages();
-        msgs.sendGlobalAllDistrictKilledMoneyNotif(Core.arena,
+        msgs.sendGlobalAllDistrictKilledMoneyNotif(
+            Macrohg.plugin.getServer().getWorld(Core.arena),
             district.getDisctrictName(), econ_districtkilled);
         msgs.sendMentorMoneyNotif(player, econ_districtkilled);
         econAPI.depositPlayer(player, econ_districtkilled);
@@ -62,7 +64,8 @@ public class VaultManager {
   public void giveMoneyTimeSurvived(ArrayList<District> districtlist) {
     Messages msgs = new Messages();
     Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
-      msgs.sendGlobalSurvivedMoneyNotif(Core.arena, econ_timesurvived);
+      msgs.sendGlobalSurvivedMoneyNotif(
+          Macrohg.plugin.getServer().getWorld(Core.arena), econ_timesurvived);
     }, 40);
 
     for (District district : districtlist) {

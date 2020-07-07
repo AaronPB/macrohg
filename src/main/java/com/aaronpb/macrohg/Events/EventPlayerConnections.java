@@ -2,7 +2,6 @@ package com.aaronpb.macrohg.Events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +25,7 @@ public class EventPlayerConnections implements Listener {
       return;
     }
 
-    World world = player.getWorld();
+    String world = player.getWorld().getName();
 
     if (world.equals(Core.arena)) {
       Bukkit.getScheduler().runTaskLater(Macrohg.plugin, new Runnable() {
@@ -70,7 +69,8 @@ public class EventPlayerConnections implements Listener {
       if (core.getAllAliveTributes() > 5) {
         core.addToAlertSystem(player.getName());
       } else {
-        msgs.sendGlobalSuddenDeathMsg(Core.arena, player.getName(),
+        msgs.sendGlobalSuddenDeathMsg(
+            Macrohg.plugin.getServer().getWorld(Core.arena), player.getName(),
             core.getTributeDistrict(player.getName()).getDisctrictName());
         core.killTribute(player, core.getTributeDistrict(player.getName()),
             null);

@@ -42,7 +42,7 @@ public class LuckPermsManager {
 
     MutableContextSet macrohgcontext = MutableContextSet.create();
     macrohgcontext.add("server", "juegos");
-    macrohgcontext.add("world", Core.arena.getName());
+    macrohgcontext.add("world", Core.arena);
 
     // Make group change
     InheritanceNode  newnode = InheritanceNode.builder(deadtribgroup)
@@ -96,7 +96,7 @@ public class LuckPermsManager {
 
     MutableContextSet macrohgcontext = MutableContextSet.create();
     macrohgcontext.add("server", "juegos");
-    macrohgcontext.add("world", Core.arena.getName());
+    macrohgcontext.add("world", Core.arena);
 
     // Make group change
     InheritanceNode  newnode = InheritanceNode.builder(tribgroup)

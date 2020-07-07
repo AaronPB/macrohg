@@ -2,7 +2,6 @@ package com.aaronpb.macrohg.Events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,9 +18,9 @@ public class EventArenaAccess implements Listener {
 
   @EventHandler
   public void PlayerMovedFromWorld(PlayerChangedWorldEvent event) {
-    World  previousworld = (World) event.getFrom();
+    String previousworld = (String) event.getFrom().getName();
     Player player        = (Player) event.getPlayer();
-    World  newworld      = player.getWorld();
+    String newworld      = player.getWorld().getName();
 
     if (!previousworld.equals(Core.arena) && !newworld.equals(Core.arena)) {
       return;
@@ -32,7 +31,8 @@ public class EventArenaAccess implements Listener {
         if (core.getAllAliveTributes() > 5) {
           core.addToAlertSystem(player.getName());
         } else {
-          msgs.sendGlobalSuddenDeathMsg(Core.arena, player.getName(),
+          msgs.sendGlobalSuddenDeathMsg(
+              Macrohg.plugin.getServer().getWorld(Core.arena), player.getName(),
               core.getTributeDistrict(player.getName()).getDisctrictName());
           core.killTribute(player, core.getTributeDistrict(player.getName()),
               null);

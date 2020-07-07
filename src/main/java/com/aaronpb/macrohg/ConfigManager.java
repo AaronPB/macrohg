@@ -78,10 +78,11 @@ public class ConfigManager {
     core.setupScoreboard();
 
     // Update scoreboard to all users in world
-    Core.arena.getPlayers().forEach(player -> {
-      core.removeFromScoreboard(player);
-      core.addToScoreboard(player);
-    });
+    Macrohg.plugin.getServer().getWorld(Core.arena).getPlayers()
+        .forEach(player -> {
+          core.removeFromScoreboard(player);
+          core.addToScoreboard(player);
+        });
 
   }
 
