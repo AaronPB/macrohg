@@ -2,7 +2,6 @@ package com.aaronpb.macrohg.Events;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +23,7 @@ public class EventPlayerKill implements Listener {
 
   @EventHandler
   public void PlayerGetDamage(EntityDamageEvent event) {
-    World arena = (World) event.getEntity().getWorld();
+    String arena = (String) event.getEntity().getWorld().getName();
 
     if (!Core.arenarunning) {
       return;
@@ -61,13 +60,15 @@ public class EventPlayerKill implements Listener {
       event.setCancelled(true);
       for (ItemStack itemStack : deadtribute.getInventory().getContents()) {
         if (itemStack != null) {
-          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+          Macrohg.plugin.getServer().getWorld(arena)
+              .dropItemNaturally(deadtribute.getLocation(), itemStack);
         }
       }
       for (ItemStack itemStack : deadtribute.getInventory()
           .getArmorContents()) {
         if (itemStack != null) {
-          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+          Macrohg.plugin.getServer().getWorld(arena)
+              .dropItemNaturally(deadtribute.getLocation(), itemStack);
         }
       }
       deadtribute.getInventory().clear();
@@ -75,8 +76,8 @@ public class EventPlayerKill implements Listener {
       deadtribute.setGameMode(GameMode.SPECTATOR);
 
       District losedistrict = core.getTributeDistrict(deadtribute.getName());
-      msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
-          losedistrict.getDisctrictName());
+      msgs.sendGlobalTributeKillMsg(Macrohg.plugin.getServer().getWorld(arena),
+          deadtribute.getName(), losedistrict.getDisctrictName());
       Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
         msgs.sendSpectatorHelpMsgs(deadtribute);
       }, 40);
@@ -86,7 +87,7 @@ public class EventPlayerKill implements Listener {
 
   @EventHandler
   public void PlayerGetDamageByEntity(EntityDamageByEntityEvent event) {
-    World arena = (World) event.getEntity().getWorld();
+    String arena = (String) event.getEntity().getWorld().getName();
 
     if (!Core.arenarunning) {
       return;
@@ -115,13 +116,15 @@ public class EventPlayerKill implements Listener {
       event.setCancelled(true);
       for (ItemStack itemStack : deadtribute.getInventory().getContents()) {
         if (itemStack != null) {
-          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+          Macrohg.plugin.getServer().getWorld(arena)
+              .dropItemNaturally(deadtribute.getLocation(), itemStack);
         }
       }
       for (ItemStack itemStack : deadtribute.getInventory()
           .getArmorContents()) {
         if (itemStack != null) {
-          arena.dropItemNaturally(deadtribute.getLocation(), itemStack);
+          Macrohg.plugin.getServer().getWorld(arena)
+              .dropItemNaturally(deadtribute.getLocation(), itemStack);
         }
       }
       deadtribute.getInventory().clear();
@@ -133,7 +136,8 @@ public class EventPlayerKill implements Listener {
       if (!(event.getDamager() instanceof Player)) {
         Utils.sendToServerConsole("debug",
             "Killer is not a player! Preforming normal kill.");
-        msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+        msgs.sendGlobalTributeKillMsg(
+            Macrohg.plugin.getServer().getWorld(arena), deadtribute.getName(),
             losedistrict.getDisctrictName());
         Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
           msgs.sendSpectatorHelpMsgs(deadtribute);
@@ -143,11 +147,13 @@ public class EventPlayerKill implements Listener {
       }
       Player killer = (Player) event.getDamager();
       if (killer == null) {
-        msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+        msgs.sendGlobalTributeKillMsg(
+            Macrohg.plugin.getServer().getWorld(arena), deadtribute.getName(),
             losedistrict.getDisctrictName());
       } else {
         windistrict = core.getTributeDistrict(killer.getName());
-        msgs.sendGlobalTributeKillMsg(arena, deadtribute.getName(),
+        msgs.sendGlobalTributeKillMsg(
+            Macrohg.plugin.getServer().getWorld(arena), deadtribute.getName(),
             losedistrict.getDisctrictName(), killer.getName(),
             windistrict.getDisctrictName());
       }
