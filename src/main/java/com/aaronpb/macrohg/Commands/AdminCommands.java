@@ -90,7 +90,7 @@ public class AdminCommands implements Listener, CommandExecutor {
     sender.sendMessage(
         Utils.chat("&6/macrohg start &7Iniciar el juego con cuenta atras"));
     sender.sendMessage(Utils
-        .chat("&6/macrohg direcstart &7Iniciar el juego sin cuenta atras"));
+        .chat("&6/macrohg directstart &7Iniciar el juego sin cuenta atras"));
     sender.sendMessage(Utils.chat(
         "&6/macrohg stop &7Parar el juego (se queda todo tal y como esta)"));
     sender.sendMessage(Utils.chat(
