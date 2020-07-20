@@ -75,7 +75,7 @@ public class Messages {
       player.playSound(player.getLocation(), Sound.ENTITY_WITHER_AMBIENT, 0.7f,
           0.8f);
       player
-          .sendMessage(MacrohgTag + Utils.chat("&2[&aREVIDIDO&2] &a&l" + revived
+          .sendMessage(MacrohgTag + Utils.chat("&2[&aREVIVIDO&2] &a&l" + revived
               + "&3 de la ciudad&b " + districtrevived + "&3 ha revivido!"));
     });
   }

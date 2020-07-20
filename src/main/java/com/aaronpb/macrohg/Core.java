@@ -68,7 +68,7 @@ public class Core {
   // Tributes disconnected
   private static HashMap<String, Integer> cooldownlist = new HashMap<String, Integer>();
   // Arena properties
-  public static World arena;
+  public static String arena;
   private static int world_cx, world_cz;
 
   /* MacrohgCore - MAIN CORE */
@@ -76,30 +76,33 @@ public class Core {
   private void macrohgCountDown() {
     countdown = 60;
     arenarunning = true;
-    arena.getPlayers().forEach(player -> {
+    Macrohg.plugin.getServer().getWorld(arena).getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRAVEL, 0.4f,
           0.5f);
     });
     countdowntimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
       if (countdown > 0) {
         if ((countdown % 3) == 0) {
-          arena.strikeLightningEffect(
-              new Location(arena, world_cx, 50, world_cz));
+          Macrohg.plugin.getServer().getWorld(arena).strikeLightningEffect(
+              new Location(Macrohg.plugin.getServer().getWorld(arena), world_cx,
+                  50, world_cz));
         }
         if (countdown > 10) {
-          arena.getPlayers().forEach(player -> {
-            player.playSound(player.getLocation(),
-                Sound.BLOCK_STONE_BUTTON_CLICK_ON, 0.5f, 0.8f);
-            player.sendTitle(Utils.chat("&3&l" + countdown),
-                Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
-          });
+          Macrohg.plugin.getServer().getWorld(arena).getPlayers()
+              .forEach(player -> {
+                player.playSound(player.getLocation(),
+                    Sound.BLOCK_STONE_BUTTON_CLICK_ON, 0.5f, 0.8f);
+                player.sendTitle(Utils.chat("&3&l" + countdown),
+                    Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
+              });
         } else {
-          arena.getPlayers().forEach(player -> {
-            player.playSound(player.getLocation(),
-                Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 0.1f);
-            player.sendTitle(Utils.chat("&c&l" + countdown),
-                Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
-          });
+          Macrohg.plugin.getServer().getWorld(arena).getPlayers()
+              .forEach(player -> {
+                player.playSound(player.getLocation(),
+                    Sound.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE, 1, 0.1f);
+                player.sendTitle(Utils.chat("&c&l" + countdown),
+                    Utils.chat("&6&lMacroHG &eminexilon"), 0, 30, 0);
+              });
         }
 
       }
@@ -118,7 +121,7 @@ public class Core {
     Messages     msgs = new Messages();
 
     arenarunning = true;
-    arena.getPlayers().forEach(player -> {
+    Macrohg.plugin.getServer().getWorld(arena).getPlayers().forEach(player -> {
       if (player.getGameMode().equals(GameMode.SURVIVAL)) {
         player.setHealth(20);
         player.setFoodLevel(20);
@@ -126,15 +129,17 @@ public class Core {
             new PotionEffect(PotionEffectType.SLOW_FALLING, 600, 1));
       }
     });
-    arena.getPlayers().forEach(player -> {
+    Macrohg.plugin.getServer().getWorld(arena).getPlayers().forEach(player -> {
       player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.2f,
           0.5f);
       player.sendTitle(Utils.chat("&6&lMacroHG &eminexilon"),
           Utils.chat("&3Que la suerte este de vuestro lado!"), 0, 30, 40);
     });
-    arena.strikeLightningEffect(new Location(arena, world_cx, 50, world_cz));
+    Macrohg.plugin.getServer().getWorld(arena).strikeLightningEffect(
+        new Location(Macrohg.plugin.getServer().getWorld(arena), world_cx, 50,
+            world_cz));
 
-    arena.setTime(0);
+    Macrohg.plugin.getServer().getWorld(arena).setTime(0);
     hgborder.setSize(800, 50);
 
     checkAllTributes();
@@ -142,11 +147,12 @@ public class Core {
     maintasktimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
 
       if (globaltimer > 2 && globaltimer < 6) {
-        arena.getPlayers().forEach(player -> {
-          if (player.getGameMode().equals(GameMode.SURVIVAL)) {
-            msgs.sendTributeSlowFallingMsg(player);
-          }
-        });
+        Macrohg.plugin.getServer().getWorld(arena).getPlayers()
+            .forEach(player -> {
+              if (player.getGameMode().equals(GameMode.SURVIVAL)) {
+                msgs.sendTributeSlowFallingMsg(player);
+              }
+            });
       }
 
       int prenextbordertimer;
@@ -155,13 +161,19 @@ public class Core {
         if (prenextbordertimer >= 0) {
           switch (prenextbordertimer) {
             case 300:
-              msgs.sendGlobalBorderNotif5(arena, bordernextpair.getValue());
+              msgs.sendGlobalBorderNotif5(
+                  Macrohg.plugin.getServer().getWorld(arena),
+                  bordernextpair.getValue());
               break;
             case 120:
-              msgs.sendGlobalBorderNotif2(arena, bordernextpair.getValue());
+              msgs.sendGlobalBorderNotif2(
+                  Macrohg.plugin.getServer().getWorld(arena),
+                  bordernextpair.getValue());
               break;
             case 60:
-              msgs.sendGlobalBorderNotif1(arena, bordernextpair.getValue());
+              msgs.sendGlobalBorderNotif1(
+                  Macrohg.plugin.getServer().getWorld(arena),
+                  bordernextpair.getValue());
               nextborder.setPrefix(Utils.chat("&4&l ! "));
               break;
             case 5:
@@ -199,7 +211,8 @@ public class Core {
               @Override
               public void run() {
                 cooldownlist.remove(tribute);
-                msgs.sendGlobalSuddenDeathMsg(arena, tribute,
+                msgs.sendGlobalSuddenDeathMsg(
+                    Macrohg.plugin.getServer().getWorld(arena), tribute,
                     getTributeDistrict(tribute).getDisctrictName());
                 killTribute(tribute, getTributeDistrict(tribute), null);
               }
@@ -208,9 +221,11 @@ public class Core {
             cdtime--;
             cooldownlist.replace(tribute, cdtime);
             if (cdtime == 120) {
-              msgs.sendGlobalPlayerDisconnect2(arena, tribute);
+              msgs.sendGlobalPlayerDisconnect2(
+                  Macrohg.plugin.getServer().getWorld(arena), tribute);
             } else if (cdtime == 60) {
-              msgs.sendGlobalPlayerDisconnect1(arena, tribute);
+              msgs.sendGlobalPlayerDisconnect1(
+                  Macrohg.plugin.getServer().getWorld(arena), tribute);
             }
           }
         }
@@ -227,17 +242,19 @@ public class Core {
   /* MacrohgCore - BORDER PROCESS */
 
   private void makeNightFast() {
-    long actualtime = arena.getTime();
+    long actualtime = Macrohg.plugin.getServer().getWorld(arena).getTime();
     makenighttimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin, () -> {
       long incr = (18000 - actualtime) / 100;
-      arena.setTime(arena.getTime() + incr);
+      Macrohg.plugin.getServer().getWorld(arena)
+          .setTime(Macrohg.plugin.getServer().getWorld(arena).getTime() + incr);
     }, 0, 1);
   }
 
   private void makeNightFastFinalEffect() {
     makenighttimerlasteffect = Bukkit.getScheduler()
         .runTaskTimer(Macrohg.plugin, () -> {
-          arena.setTime(arena.getTime() + 20);
+          Macrohg.plugin.getServer().getWorld(arena).setTime(
+              Macrohg.plugin.getServer().getWorld(arena).getTime() + 20);
         }, 0, 1);
 
     Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
@@ -261,7 +278,7 @@ public class Core {
         BarColor.RED, BarStyle.SEGMENTED_6);
     hgbar.setProgress(0);
 
-    arena.getPlayers().forEach(player -> {
+    Macrohg.plugin.getServer().getWorld(arena).getPlayers().forEach(player -> {
       hgbar.addPlayer(player);
       player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.2f,
           0.5f);
@@ -269,13 +286,14 @@ public class Core {
           Utils.chat("&7¡El borde se esta reduciendo!"), 10, 60, 10);
     });
 
-    arena.setTime(18000);
+    Macrohg.plugin.getServer().getWorld(arena).setTime(18000);
 
     borderbossbartasktimer = Bukkit.getScheduler().runTaskTimer(Macrohg.plugin,
         () -> {
           if ((borderbossbartimer % 3) == 0)
-            arena.strikeLightningEffect(
-                new Location(arena, world_cx, 50, world_cz));
+            Macrohg.plugin.getServer().getWorld(arena).strikeLightningEffect(
+                new Location(Macrohg.plugin.getServer().getWorld(arena),
+                    world_cx, 50, world_cz));
 
           float incr     = (float) 1 / 60;
           double newProgress = hgbar.getProgress() + incr;
@@ -296,7 +314,7 @@ public class Core {
           borderbossbartimer = 60;
           borderbossbartasktimer.cancel();
           hgbar.removeAll();
-          arena.setTime(0);
+          Macrohg.plugin.getServer().getWorld(arena).setTime(0);
           nextborder.setPrefix("");
           Utils.sendToServerConsole("info",
               "Border bossbar timer correctly canceled!");
@@ -309,8 +327,8 @@ public class Core {
     if (getAllAliveTributes() == 1 && getIsAliveTribute(winner)) {
       makeNightFastFinalEffect();
       Player player = Macrohg.plugin.getServer().getPlayer(winner);
-      arena.setTime(6000);
-      msgs.sendGlobalVictory(arena, winner,
+      Macrohg.plugin.getServer().getWorld(arena).setTime(6000);
+      msgs.sendGlobalVictory(Macrohg.plugin.getServer().getWorld(arena), winner,
           getTributeDistrict(winner).getDisctrictName());
       stopGame();
       if (player == null) {
@@ -323,16 +341,20 @@ public class Core {
       player.addPotionEffect(
           new PotionEffect(PotionEffectType.LEVITATION, 180, 1));
       Bukkit.getScheduler().runTaskLater(Macrohg.plugin, () -> {
-        arena.strikeLightningEffect(player.getLocation());
-        arena.strikeLightningEffect(player.getLocation());
+        Macrohg.plugin.getServer().getWorld(arena)
+            .strikeLightningEffect(player.getLocation());
+        Macrohg.plugin.getServer().getWorld(arena)
+            .strikeLightningEffect(player.getLocation());
         for (ItemStack itemStack : player.getInventory().getContents()) {
           if (itemStack != null) {
-            arena.dropItemNaturally(player.getLocation(), itemStack);
+            Macrohg.plugin.getServer().getWorld(arena)
+                .dropItemNaturally(player.getLocation(), itemStack);
           }
         }
         for (ItemStack itemStack : player.getInventory().getArmorContents()) {
           if (itemStack != null) {
-            arena.dropItemNaturally(player.getLocation(), itemStack);
+            Macrohg.plugin.getServer().getWorld(arena)
+                .dropItemNaturally(player.getLocation(), itemStack);
           }
         }
         player.getInventory().clear();
@@ -431,7 +453,8 @@ public class Core {
   public void addToAlertSystem(String playername) {
     Messages msgs = new Messages();
     cooldownlist.put(playername, 240);
-    msgs.sendGlobalPlayerDisconnect(arena, playername);
+    msgs.sendGlobalPlayerDisconnect(Macrohg.plugin.getServer().getWorld(arena),
+        playername);
   }
 
   public void removeFromAlertSystem(String playername) {
@@ -466,8 +489,10 @@ public class Core {
     }
 
     // Arena effects
-    arena.strikeLightningEffect(deadtribute.getLocation());
-    arena.strikeLightningEffect(deadtribute.getLocation());
+    Macrohg.plugin.getServer().getWorld(arena)
+        .strikeLightningEffect(deadtribute.getLocation());
+    Macrohg.plugin.getServer().getWorld(arena)
+        .strikeLightningEffect(deadtribute.getLocation());
 
     if (windistrict != null) {
       vmng.giveMoneyKill(windistrict);
@@ -477,10 +502,12 @@ public class Core {
 
       if (windistrict != null) {
         vmng.giveMoneyDistrictKilled(windistrict);
-        msgs.sendGlobalAllDistrictKilled(arena, losedistrict.getDisctrictName(),
-            windistrict.getDisctrictName());
+        msgs.sendGlobalAllDistrictKilled(
+            Macrohg.plugin.getServer().getWorld(arena),
+            losedistrict.getDisctrictName(), windistrict.getDisctrictName());
       } else
-        msgs.sendGlobalAllDistrictKilled(arena,
+        msgs.sendGlobalAllDistrictKilled(
+            Macrohg.plugin.getServer().getWorld(arena),
             losedistrict.getDisctrictName());
 
       if (losedistrict.getTribute1().equals(deadtribute.getName()))
@@ -496,7 +523,8 @@ public class Core {
 
     if (getAllAliveTributes() == 5) {
       Utils.sendToServerConsole("info", "Activate warning!!");
-      msgs.sendGlobalSuddenDeathWarning(arena);
+      msgs.sendGlobalSuddenDeathWarning(
+          Macrohg.plugin.getServer().getWorld(arena));
       killCooldownTributes();
     } else if (getAllAliveTributes() == 1) {
       Utils.sendToServerConsole("info", "Searching the winner!!...");
@@ -533,10 +561,12 @@ public class Core {
 
       if (windistrict != null) {
         vmng.giveMoneyDistrictKilled(windistrict);
-        msgs.sendGlobalAllDistrictKilled(arena, losedistrict.getDisctrictName(),
-            windistrict.getDisctrictName());
+        msgs.sendGlobalAllDistrictKilled(
+            Macrohg.plugin.getServer().getWorld(arena),
+            losedistrict.getDisctrictName(), windistrict.getDisctrictName());
       } else
-        msgs.sendGlobalAllDistrictKilled(arena,
+        msgs.sendGlobalAllDistrictKilled(
+            Macrohg.plugin.getServer().getWorld(arena),
             losedistrict.getDisctrictName());
 
       if (losedistrict.getTribute1().equals(deadtribute))
@@ -552,7 +582,8 @@ public class Core {
 
     if (getAllAliveTributes() == 5) {
       Utils.sendToServerConsole("info", "Activate warning!!");
-      msgs.sendGlobalSuddenDeathWarning(arena);
+      msgs.sendGlobalSuddenDeathWarning(
+          Macrohg.plugin.getServer().getWorld(arena));
       killCooldownTributes();
     } else if (getAllAliveTributes() == 1) {
       Utils.sendToServerConsole("info", "Searching the winner!!...");
@@ -575,7 +606,8 @@ public class Core {
           @Override
           public void run() {
             cooldownlist.remove(tribute);
-            msgs.sendGlobalSuddenDeathMsg(arena, tribute,
+            msgs.sendGlobalSuddenDeathMsg(
+                Macrohg.plugin.getServer().getWorld(arena), tribute,
                 getTributeDistrict(tribute).getDisctrictName());
             killTribute(tribute, getTributeDistrict(tribute), null);
           }
@@ -633,6 +665,31 @@ public class Core {
     nextborder.setSuffix(Utils.chat("&7--:--"));
   }
 
+  public String lpResetGroups() {
+    String           assignstatus = "&e&m====&6 &lMacroHG - Asignacion de grupos&e &m====";
+    LuckPermsManager lpmng        = new LuckPermsManager();
+    for (District district : districtlist) {
+      assignstatus = assignstatus + "\n&7- &d" + district.getDisctrictName();
+      if (district.getHasMentor()) {
+        if (lpmng.assignMentorGroup(district.getMentor()))
+          assignstatus = assignstatus + "&7 | &3(Ment)&a"
+              + district.getMentor();
+        else
+          assignstatus = assignstatus + "&7 | &3(Ment)&c"
+              + district.getMentor();
+      }
+
+      for (String tribute : district.getAliveTributes()) {
+        if (lpmng.assignTributeGroup(tribute))
+          assignstatus = assignstatus + "&7 | &6(Trib)&a" + tribute;
+        else
+          assignstatus = assignstatus + "&7 | &6(Trib)&c" + tribute;
+      }
+    }
+
+    return assignstatus;
+  }
+
   public int checkAllTributes() {
     int numtributes = 0;
     for (District district : districtlist) {
@@ -674,16 +731,16 @@ public class Core {
   }
 
   public void setWorldSettings(String worldname, int x, int z) {
-    arena = Bukkit.getWorld(worldname);
-    Utils.sendToServerConsole("debug", "asdasdasd");
-    if (arena == null) {
+    World arenaworld = Macrohg.plugin.getServer().getWorld(worldname);
+    if (arenaworld == null) {
       Utils.sendToServerConsole("error",
           "World " + worldname + " does not exist in this server!");
       return;
     }
+    arena = arenaworld.getName();
     world_cx = x;
     world_cz = z;
-    hgborder = arena.getWorldBorder();
+    hgborder = Macrohg.plugin.getServer().getWorld(arena).getWorldBorder();
     hgborder.setCenter(x, z);
     Utils.sendToServerConsole("debug", "World settings loaded!");
   }
