@@ -2,6 +2,7 @@
 debugmode: true
 
 # LuckPerms group ranks
+mentorgroup: mentor
 tributegroup: tributo
 deadtributegroup: tributomuerto
 

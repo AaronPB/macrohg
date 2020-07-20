@@ -45,6 +45,9 @@ public class AdminCommands implements Listener, CommandExecutor {
         case "reload":
           actionReload(sender);
           break;
+        case "reassign":
+          actionReassign(sender);
+          break;
         case "status":
           sendStatusInfo(sender);
           break;
@@ -85,6 +88,8 @@ public class AdminCommands implements Listener, CommandExecutor {
         .sendMessage(Utils.chat("&e&m====&6 &lMacroHG - Asistencia&e &m===="));
     sender.sendMessage(Utils.chat(
         "&6/macrohg reload &7Recargar la config (debe hacerse con la arena parada)"));
+    sender.sendMessage(Utils.chat(
+        "&6/macrohg reassign &7Reasigna los grupos a los tributos vivos registrados y mentores (para reasignarlos a todos, hacer previamente un reload)"));
     sender.sendMessage(
         Utils.chat("&6/macrohg status &7Revisar el estado del juego"));
     sender.sendMessage(
@@ -129,6 +134,17 @@ public class AdminCommands implements Listener, CommandExecutor {
     cfgmn.reload();
     sender.sendMessage(Utils.chat(
         "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &aSe ha reiniciado la config correctamente."));
+  }
+
+  private void actionReassign(CommandSender sender) {
+    if (Core.arenarunning) {
+      sender.sendMessage(Utils.chat(
+          "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &cLa arena esta inicada, se ha parado el juego."));
+      core.stopGame();
+    }
+    sender.sendMessage(Utils.chat(core.lpResetGroups()));
+    sender.sendMessage(Utils.chat(
+        "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &aSe han reasignado los grupos a todos los listados, excepto los marcados en &crojo&a."));
   }
 
   private void actionStartGame(CommandSender sender, boolean direct) {

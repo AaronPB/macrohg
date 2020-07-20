@@ -665,6 +665,31 @@ public class Core {
     nextborder.setSuffix(Utils.chat("&7--:--"));
   }
 
+  public String lpResetGroups() {
+    String           assignstatus = "&e&m====&6 &lMacroHG - Asignacion de grupos&e &m====";
+    LuckPermsManager lpmng        = new LuckPermsManager();
+    for (District district : districtlist) {
+      assignstatus = assignstatus + "\n&7- &d" + district.getDisctrictName();
+      if (district.getHasMentor()) {
+        if (lpmng.assignMentorGroup(district.getMentor()))
+          assignstatus = assignstatus + "&7 | &3(Ment)&a"
+              + district.getMentor();
+        else
+          assignstatus = assignstatus + "&7 | &3(Ment)&c"
+              + district.getMentor();
+      }
+
+      for (String tribute : district.getAliveTributes()) {
+        if (lpmng.assignTributeGroup(tribute))
+          assignstatus = assignstatus + "&7 | &6(Trib)&a" + tribute;
+        else
+          assignstatus = assignstatus + "&7 | &6(Trib)&c" + tribute;
+      }
+    }
+
+    return assignstatus;
+  }
+
   public int checkAllTributes() {
     int numtributes = 0;
     for (District district : districtlist) {

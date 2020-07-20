@@ -103,7 +103,8 @@ public class ConfigManager {
     }
 
     // Luckperms group ranks
-    String tributegroup = "tributo", deadtributegroup = "deadtributegroup";
+    String tributegroup = "tributo", deadtributegroup = "deadtributegroup",
+        mentorgroup = "mentor";
     if (config.isSet("tributegroup")) {
       tributegroup = config.getString("tributegroup");
       Utils.sendToServerConsole("info",
@@ -120,9 +121,16 @@ public class ConfigManager {
       Utils.sendToServerConsole("warn",
           "[spectatorgroup] Not found in config. Setting to deadtributegroup");
     }
+    if (config.isSet("mentorgroup")) {
+      mentorgroup = config.getString("mentorgroup");
+      Utils.sendToServerConsole("info", "[mentorgroup] set to " + mentorgroup);
+    } else {
+      Utils.sendToServerConsole("warn",
+          "[mentorgroup] Not found in config. Setting to mentorgroup");
+    }
 
     Utils.sendToServerConsole("info", "Luckperms settings loaded.");
-    lpmng.setGroups(tributegroup, deadtributegroup);
+    lpmng.setGroups(tributegroup, deadtributegroup, mentorgroup);
 
     // Districts
     ArrayList<District> districtlist = new ArrayList<District>();

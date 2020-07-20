@@ -14,7 +14,7 @@ import net.luckperms.api.node.types.InheritanceNode;
 public class LuckPermsManager {
 
   private LuckPerms lpAPI = Macrohg.luckPerms;
-  private static String tributegroup, deadtributegroup;
+  private static String tributegroup, deadtributegroup, mentorgroup;
 
   public void changeToDeadTribute(String deadplayer) {
     // Load user information
@@ -124,10 +124,106 @@ public class LuckPermsManager {
     lpAPI.getUserManager().saveUser(user);
   }
 
+  public boolean assignTributeGroup(String tributeplayer) {
+    // Load user information
+    User user = lpAPI.getUserManager().getUser(tributeplayer);
+    if (user == null) {
+      Utils.sendToServerConsole("warn", "LPmanager - " + tributeplayer
+          + " does no exist in LuckPerms! Groups not changed.");
+      return false;
+    }
+
+    // Load groups
+    Group tribgroup = lpAPI.getGroupManager().getGroup(tributegroup);
+    if (tribgroup == null) {
+      Utils.sendToServerConsole("warn", "LPmanager - Group " + tributegroup
+          + " does not exist in LuckPerms!");
+      return false;
+    }
+
+    Group deadtribgroup = lpAPI.getGroupManager().getGroup(deadtributegroup);
+    if (deadtribgroup == null) {
+      Utils.sendToServerConsole("error", "LPmanager - The group "
+          + deadtributegroup + " does not exist in LuckPerms!");
+      return false;
+    }
+
+    MutableContextSet macrohgcontext = MutableContextSet.create();
+    macrohgcontext.add("server", "juegos");
+    macrohgcontext.add("world", Core.arena);
+
+    // Make group change
+    InheritanceNode  newnode = InheritanceNode.builder(tribgroup)
+        .context(macrohgcontext).build();
+    DataMutateResult result  = user.data().add(newnode);
+    if (result.wasSuccessful()) {
+      Utils.sendToServerConsole("info", "LPmanager - " + tributeplayer
+          + " has been added to " + tributegroup);
+    } else {
+      Utils.sendToServerConsole("error", "LPmanager - " + tributeplayer
+          + " could not be added to " + tributegroup);
+    }
+
+    InheritanceNode oldnode = InheritanceNode.builder(deadtribgroup)
+        .context(macrohgcontext).build();
+    result = user.data().remove(oldnode);
+    if (result.wasSuccessful()) {
+      Utils.sendToServerConsole("info", "LPmanager - " + tributeplayer
+          + " has been removed from " + deadtributegroup);
+    } else {
+      Utils.sendToServerConsole("error", "LPmanager - " + tributeplayer
+          + " could not be removed from " + deadtributegroup);
+    }
+
+    lpAPI.getUserManager().saveUser(user);
+
+    return true;
+  }
+
+  public boolean assignMentorGroup(String mentorplayer) {
+    // Load user information
+    User user = lpAPI.getUserManager().getUser(mentorplayer);
+    if (user == null) {
+      Utils.sendToServerConsole("warn", "LPmanager - " + mentorplayer
+          + " does no exist in LuckPerms! Groups not changed.");
+      return false;
+    }
+
+    // Load groups
+    Group mentgroup = lpAPI.getGroupManager().getGroup(mentorgroup);
+    if (mentgroup == null) {
+      Utils.sendToServerConsole("warn",
+          "LPmanager - Group " + mentorgroup + " does not exist in LuckPerms!");
+      return false;
+    }
+
+    MutableContextSet macrohgcontext = MutableContextSet.create();
+    macrohgcontext.add("server", "juegos");
+    macrohgcontext.add("world", Core.arena);
+
+    // Make group change
+    InheritanceNode  newnode = InheritanceNode.builder(mentgroup)
+        .context(macrohgcontext).build();
+    DataMutateResult result  = user.data().add(newnode);
+    if (result.wasSuccessful()) {
+      Utils.sendToServerConsole("info",
+          "LPmanager - " + mentorplayer + " has been added to " + mentorgroup);
+    } else {
+      Utils.sendToServerConsole("error", "LPmanager - " + mentorplayer
+          + " could not be added to " + mentorgroup);
+    }
+
+    lpAPI.getUserManager().saveUser(user);
+
+    return true;
+  }
+
   // Setters
-  public void setGroups(String tributeg, String deadtributeg) {
+  public void setGroups(String tributeg, String deadtributeg,
+      String mentorteg) {
     tributegroup = tributeg;
     deadtributegroup = deadtributeg;
+    mentorgroup = mentorteg;
     Utils.sendToServerConsole("info", "LPmanager -  Groups correctly set!");
   }
 
