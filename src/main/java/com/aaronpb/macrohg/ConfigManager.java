@@ -139,25 +139,20 @@ public class ConfigManager {
     for (String district : config.getConfigurationSection("districts")
         .getKeys(false)) {
       String  path         = "districts." + district;
+      String  mentor       = null, tribute2 = null;
       boolean mentor_set   = config.isSet(path + ".mentor");
       boolean tribute1_set = config.isSet(path + ".tribute1");
       boolean tribute2_set = config.isSet(path + ".tribute2");
 
       if (tribute1_set) {
-        if (mentor_set && tribute2_set) {
-          setdistrict = new District(district,
-              config.getString(path + ".mentor"),
-              config.getString(path + ".tribute1"),
-              config.getString(path + ".tribute2"));
-        } else if (mentor_set) {
-          setdistrict = new District(district,
-              config.getString(path + ".mentor"),
-              config.getString(path + ".tribute1"));
-        } else {
-          setdistrict = new District(district,
-              config.getString(path + ".tribute1"));
-        }
 
+        if (mentor_set)
+          mentor = config.getString(path + ".mentor");
+        if (tribute2_set)
+          tribute2 = config.getString(path + ".tribute2");
+
+        setdistrict = new District(district, mentor,
+            config.getString(path + ".tribute1"), tribute2);
         districtlist.add(setdistrict);
 
         Utils.sendToServerConsole("info",
