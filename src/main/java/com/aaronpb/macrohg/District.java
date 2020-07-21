@@ -11,29 +11,15 @@ public class District {
   private String districtname, mentor, tribute1, tribute2;
   private boolean alive1 = true, alive2 = true;
 
-  /* Class contructors */
+  /* Class contructor */
   public District(String district, String mentor, String tribute1,
       String tribute2) {
     this.districtname = district;
     this.mentor = mentor;
     this.tribute1 = tribute1;
     this.tribute2 = tribute2;
-  }
-
-  public District(String district, String mentor, String tribute1) {
-    this.districtname = district;
-    this.mentor = mentor;
-    this.tribute1 = tribute1;
-    this.tribute2 = null;
-    this.alive2 = false;
-  }
-
-  public District(String district, String tribute1) {
-    this.districtname = district;
-    this.mentor = null;
-    this.tribute1 = tribute1;
-    this.tribute2 = null;
-    this.alive2 = false;
+    if(tribute2 == null)
+      this.alive2 = false;
   }
 
   /* Public class contructors */
