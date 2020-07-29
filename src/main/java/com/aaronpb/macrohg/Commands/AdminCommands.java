@@ -137,11 +137,6 @@ public class AdminCommands implements Listener, CommandExecutor {
   }
 
   private void actionReassign(CommandSender sender) {
-    if (Core.arenarunning) {
-      sender.sendMessage(Utils.chat(
-          "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &cLa arena esta inicada, se ha parado el juego."));
-      core.stopGame();
-    }
     sender.sendMessage(Utils.chat(core.lpResetGroups()));
     sender.sendMessage(Utils.chat(
         "&c[ADMIN] &6&l[&e&lMacroHG&6&l] &aSe han reasignado los grupos a todos los listados, excepto los marcados en &crojo&a."));
