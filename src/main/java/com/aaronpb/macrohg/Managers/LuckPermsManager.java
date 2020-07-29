@@ -1,11 +1,9 @@
 package com.aaronpb.macrohg.Managers;
 
-import com.aaronpb.macrohg.Core;
 import com.aaronpb.macrohg.Macrohg;
 import com.aaronpb.macrohg.Utils.Utils;
 
 import net.luckperms.api.LuckPerms;
-import net.luckperms.api.context.MutableContextSet;
 import net.luckperms.api.model.data.DataMutateResult;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
@@ -40,13 +38,8 @@ public class LuckPermsManager {
       return;
     }
 
-    MutableContextSet macrohgcontext = MutableContextSet.create();
-    macrohgcontext.add("server", "juegos");
-    macrohgcontext.add("world", Core.arena);
-
     // Make group change
-    InheritanceNode  newnode = InheritanceNode.builder(deadtribgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode  newnode = InheritanceNode.builder(deadtribgroup).build();
     DataMutateResult result  = user.data().add(newnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info", "LPmanager - " + deadplayer
@@ -56,8 +49,7 @@ public class LuckPermsManager {
           + " could not be added to " + deadtributegroup);
     }
 
-    InheritanceNode oldnode = InheritanceNode.builder(tribgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode oldnode = InheritanceNode.builder(tribgroup).build();
     result = user.data().remove(oldnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info", "LPmanager - " + deadplayer
@@ -94,13 +86,8 @@ public class LuckPermsManager {
       return;
     }
 
-    MutableContextSet macrohgcontext = MutableContextSet.create();
-    macrohgcontext.add("server", "juegos");
-    macrohgcontext.add("world", Core.arena);
-
     // Make group change
-    InheritanceNode  newnode = InheritanceNode.builder(tribgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode  newnode = InheritanceNode.builder(tribgroup).build();
     DataMutateResult result  = user.data().add(newnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info", "LPmanager - " + revivingplayer
@@ -110,8 +97,7 @@ public class LuckPermsManager {
           + " could not be added to " + tributegroup);
     }
 
-    InheritanceNode oldnode = InheritanceNode.builder(deadtribgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode oldnode = InheritanceNode.builder(deadtribgroup).build();
     result = user.data().remove(oldnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info", "LPmanager - " + revivingplayer
@@ -148,13 +134,8 @@ public class LuckPermsManager {
       return false;
     }
 
-    MutableContextSet macrohgcontext = MutableContextSet.create();
-    macrohgcontext.add("server", "juegos");
-    macrohgcontext.add("world", Core.arena);
-
     // Make group change
-    InheritanceNode  newnode = InheritanceNode.builder(tribgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode  newnode = InheritanceNode.builder(tribgroup).build();
     DataMutateResult result  = user.data().add(newnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info", "LPmanager - " + tributeplayer
@@ -164,8 +145,7 @@ public class LuckPermsManager {
           + " could not be added to " + tributegroup);
     }
 
-    InheritanceNode oldnode = InheritanceNode.builder(deadtribgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode oldnode = InheritanceNode.builder(deadtribgroup).build();
     result = user.data().remove(oldnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info", "LPmanager - " + tributeplayer
@@ -197,13 +177,8 @@ public class LuckPermsManager {
       return false;
     }
 
-    MutableContextSet macrohgcontext = MutableContextSet.create();
-    macrohgcontext.add("server", "juegos");
-    macrohgcontext.add("world", Core.arena);
-
     // Make group change
-    InheritanceNode  newnode = InheritanceNode.builder(mentgroup)
-        .context(macrohgcontext).build();
+    InheritanceNode  newnode = InheritanceNode.builder(mentgroup).build();
     DataMutateResult result  = user.data().add(newnode);
     if (result.wasSuccessful()) {
       Utils.sendToServerConsole("info",
